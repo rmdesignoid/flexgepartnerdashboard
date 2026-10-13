@@ -52,3 +52,30 @@
 
 .ai-student-result-row{grid-template-columns:40px minmax(120px,1fr) 100px 140px auto auto}
 @media(max-width:900px){.ai-student-result-row{grid-template-columns:40px minmax(120px,1fr);gap:12px}}
+
+/* Assigned-student headers and rows share the same five-column layout. */
+.ai-teacher .ai-student-table__header,
+.ai-teacher .ai-student-result-row {
+  grid-template-columns: 32px minmax(120px, 1fr) 110px 130px 210px;
+  gap: 12px;
+}
+.ai-teacher .ai-student-result-row > strong { min-width: 0; overflow-wrap: anywhere; }
+.ai-teacher .ai-student-completion-date { white-space: nowrap; }
+.ai-teacher .ai-student-result-row .op-student-actions {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.ai-teacher .op-student-actions .ai-row-action { white-space: nowrap; }
+@media (max-width: 1000px) {
+  .ai-teacher .ai-student-table__header,
+  .ai-teacher .ai-student-result-row { grid-template-columns: 32px minmax(120px, 1fr) 100px 130px; }
+  .ai-teacher .ai-student-table__header > span:last-child { display: none; }
+  .ai-teacher .ai-student-result-row .op-student-actions { grid-column: 2 / -1; align-items: flex-start; }
+}
+@media (max-width: 680px) {
+  .ai-teacher .ai-student-result-row { grid-template-columns: 32px minmax(0, 1fr) auto; }
+  .ai-teacher .ai-student-result-row .ai-student-completion-date { display: block; grid-column: 2 / -1; }
+}
