@@ -125,7 +125,7 @@ export function performanceScore(attempt: Attempt) { return attempt.evaluation ?
 
 // Curated copy for the seeded Anna demonstration, never for real assessments.
 export function annaExampleInsights(entries: PerformanceEntry[], student: string) {
-  if (student !== "Anna Johnson" || entries.some((entry) => entry.attempt.evaluation?.mode !== "simulated" || evidenceChanged(entry.attempt))) return null;
+  if (student !== "Anna Johnson" || entries.some((entry) => entry.attempt.evaluation?.mode !== "simulated")) return null;
   const ids = {
     weekend: "example-oral-anna-weekend-v2-v1",
     hotel: "example-oral-anna-hotel-v2-v1",
@@ -134,7 +134,7 @@ export function annaExampleInsights(entries: PerformanceEntry[], student: string
     followup: "example-oral-anna-hotel-followup-v2-v1",
     dinner: "example-oral-restaurant-v1",
   };
-  const samples = entries.filter((entry) => entry.practice.isExample && entry.attempt.student === student && Object.values(ids).includes(entry.practice.id));
+  const samples = entries.filter((entry) => entry.practice.isExample && !evidenceChanged(entry.attempt) && entry.attempt.student === student && Object.values(ids).includes(entry.practice.id));
   if (samples.length < 2) return null;
   const definitions = [
     {
