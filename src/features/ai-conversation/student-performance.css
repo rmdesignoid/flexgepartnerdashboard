@@ -56,7 +56,7 @@
 /* Assigned-student headers and rows share the same five-column layout. */
 .ai-teacher .ai-student-table .ai-student-table__header,
 .ai-teacher .ai-student-table .ai-student-result-row {
-  grid-template-columns: 32px minmax(120px, 1fr) 110px 130px 210px;
+  grid-template-columns: 32px minmax(120px, 1fr) 100px 120px 320px;
   gap: 12px;
 }
 .ai-teacher .ai-student-table .ai-student-result-row > strong { min-width: 0; overflow-wrap: anywhere; }
@@ -64,9 +64,11 @@
 .ai-teacher .ai-student-table .ai-student-result-row .op-student-actions {
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
 }
 .ai-teacher .op-student-actions .ai-row-action { white-space: nowrap; }
 @media (max-width: 1000px) {
