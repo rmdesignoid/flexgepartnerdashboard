@@ -115,3 +115,31 @@ test("evolution uses the current individual report Score after a teacher edit", 
  response.teacherCorrections = [{ label: "Pronunciation", score: 92, evidence: "Original evidence" }];
  assert.equal(api.performanceScore(response), 92);
 });
+
+const examplesContext = createContext({ exports: {} });
+runInContext(ts.transpileModule(readFileSync(new URL("../src/features/ai-conversation/example-practices.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, examplesContext);
+const annaExamples = api.studentHistory({ practices: examplesContext.exports.EXAMPLE_PRACTICES, attempts: examplesContext.exports.EXAMPLE_ATTEMPTS }, "Anna Johnson");
+test("Anna's demonstration includes a complete qualitative example with linked evidence", () => {
+  const insights = api.annaExampleInsights(annaExamples, "Anna Johnson");
+  assert.match(insights.summary, /illustrative history/);
+  assert.equal(insights.patterns.length, 3);
+  for (const pattern of insights.patterns) {
+    assert.ok(pattern.entries.length >= 2);
+    assert.ok(pattern.recommendation.length > 40);
+  }
+});
+test("Anna's example follows period selection and avoids real or revised evidence", () => {
+  const selected = api.performanceSlice(annaExamples, "2026-09-06", "2026-09-10");
+  const insights = api.annaExampleInsights(selected, "Anna Johnson");
+  assert.equal(insights.patterns.length, 1);
+  assert.equal(insights.patterns[0].key, "example-requests");
+  assert.doesNotMatch(insights.summary, /project account|weekend response/);
+  assert.equal(api.annaExampleInsights(selected.slice(0, 1), "Anna Johnson"), null);
+  assert.equal(api.annaExampleInsights(selected, "Other student"), null);
+  const revised = structuredClone(selected);
+  revised[0].attempt.teacherCorrections = [{ label: "Pronunciation", score: 70, evidence: "Revised teacher evidence" }];
+  assert.equal(api.annaExampleInsights(revised, "Anna Johnson"), null);
+  revised[0].attempt.teacherCorrections = undefined;
+  revised[0].attempt.evaluation.mode = undefined;
+  assert.equal(api.annaExampleInsights(revised, "Anna Johnson"), null);
+});

@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Mic2 } from "lucide-react";
 import { Button } from "../../design-system";
 import { SavedRecording } from "./AudioPlayer";
 import { SKILL_LABELS, type ConversationState } from "./types";
-import { performanceScore, communicativeGoal, pedagogicalSummary, effectiveSkills, hasEvaluation, performanceDate, performanceSlice, recurringDifficulties, studentHistory, type PerformanceEntry } from "./performance";
+import { annaExampleInsights, performanceScore, communicativeGoal, pedagogicalSummary, effectiveSkills, hasEvaluation, performanceDate, performanceSlice, recurringDifficulties, studentHistory, type PerformanceEntry } from "./performance";
 import "./student-performance.css";
 
 const COLORS = ["#7854c7", "#2682ba", "#229272", "#cb8130", "#c35783"];
@@ -22,7 +22,8 @@ export function StudentPerformance({ state, student, onReport, onReturn, active 
   const evaluated = slice.filter(hasEvaluation);
   const first = slice.find((e) => e.attempt.id === comparisonId) ?? slice[0];
   const latest = slice[slice.length - 1];
-  const patterns = recurringDifficulties(evaluated);
+  const exampleInsights = annaExampleInsights(evaluated, student);
+  const patterns = exampleInsights?.patterns ?? recurringDifficulties(evaluated);
   function resetComparison() { setComparisonId(""); }
   return <section className="op-performance">
     {!embedded ? <><header className="op-profile"><span className="op-profile-avatar" aria-hidden="true">{student.split(" ").map((s) => s[0]).join("")}</span><div className="op-profile-info"><h2>{student}</h2><p>Speaking performance · Individual activity history</p></div><span className="op-report-count"><Mic2 size={15} aria-hidden="true" />{history.length} oral reports</span></header>
@@ -35,7 +36,7 @@ export function StudentPerformance({ state, student, onReport, onReturn, active 
       </div><aside className="op-pedagogy" aria-label="Pedagogical analysis">
         <h3>Summary</h3>
         {evaluated.some((e) => e.attempt.evaluation?.mode === "simulated") ? <span className="ai-report-simulated">Includes illustrative feedback · not a real assessment</span> : null}
-        <p role="status">{pedagogicalSummary(evaluated)}</p>
+        <p role="status">{exampleInsights?.summary ?? pedagogicalSummary(evaluated)}</p>
         <h3>Recurring difficulties</h3>
         {evaluated.length < 2 ? <p>At least two practices with feedback are needed to examine recurring difficulties.</p> : patterns.length ? <ul>{patterns.map((pattern) => <li key={pattern.key}>{pattern.text}<small>Observed in: {pattern.entries.map((entry) => `${entry.practice.title} (${performanceDate(entry.attempt.completedAt)})`).join("; ")}</small></li>)}</ul> : <p>No recurring communicative difficulties were identified in the practices analyzed.</p>}
         <h3>Growth opportunities</h3>

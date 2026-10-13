@@ -122,3 +122,47 @@ export function performanceDate(value: string) {
 }
 
 export function performanceScore(attempt: Attempt) { return attempt.evaluation ? attemptScore(attempt) : null; }
+
+// Curated copy for the seeded Anna demonstration, never for real assessments.
+export function annaExampleInsights(entries: PerformanceEntry[], student: string) {
+  if (student !== "Anna Johnson" || entries.some((entry) => entry.attempt.evaluation?.mode !== "simulated" || evidenceChanged(entry.attempt))) return null;
+  const ids = {
+    weekend: "example-oral-anna-weekend-v2-v1",
+    hotel: "example-oral-anna-hotel-v2-v1",
+    restaurant: "example-oral-anna-restaurant-v2-v1",
+    project: "example-oral-anna-project-v2-v1",
+    followup: "example-oral-anna-hotel-followup-v2-v1",
+    dinner: "example-oral-restaurant-v1",
+  };
+  const samples = entries.filter((entry) => entry.practice.isExample && entry.attempt.student === student && Object.values(ids).includes(entry.practice.id));
+  if (samples.length < 2) return null;
+  const definitions = [
+    {
+      key: "example-continuity",
+      ids: [ids.weekend, ids.project, ids.followup],
+      text: "Transitions and pauses need more consistency. Short phrases, missing links between events and long sentences can make parts of the message harder to follow.",
+      recommendation: "Retell a familiar experience in three stages using ‘first’, ‘then’ and ‘as a result’. Mark a short pause between stages, then repeat without the outline. Check whether a partner can follow the sequence.",
+    },
+    {
+      key: "example-requests",
+      ids: [ids.hotel, ids.restaurant, ids.followup, ids.dinner],
+      text: "Service requests need greater variety and precision. Anna sometimes relies on repeated request phrases and needs support when expressing a conditional backup option.",
+      recommendation: "Role-play a hotel or restaurant problem. Alternate ‘Could I…?’, ‘Could you check whether…?’ and ‘Would it be possible…?’. Add a backup request with ‘If…’ and respond to one unexpected answer.",
+    },
+    {
+      key: "example-detail",
+      ids: [ids.weekend, ids.restaurant, ids.project, ids.dinner],
+      text: "Reasons and descriptions can be more specific. Some answers would benefit from a clearer reason, a descriptive word or a concrete detail about the outcome.",
+      recommendation: "Extend an answer with one reason and one concrete example. Describe an activity, explain a food restriction or recount a project result. Ask a partner to repeat the key detail to check that it was clear.",
+    },
+  ];
+  const patterns = definitions.flatMap(({ ids: matchingIds, ...definition }) => {
+    const evidence = samples.filter((entry) => matchingIds.includes(entry.practice.id));
+    return evidence.length >= 2 ? [{ ...definition, entries: evidence }] : [];
+  });
+  const has = (id: string) => samples.some((entry) => entry.practice.id === id);
+  const summary = has(ids.weekend) && has(ids.followup) && has(ids.project)
+    ? "In this illustrative history, Anna communicates across familiar descriptions, service requests and a project account. The early weekend response uses short, repeated phrases; later examples include a concrete contribution to a project, clearer context for a hotel problem and a practical alternative. Relevant vocabulary and task focus are consistent strengths. The next priorities are smoother links between ideas, more precise requests and richer supporting details. These tasks differ in level and purpose, so the score trend alone does not establish learning progress."
+    : `In the selected illustrative practices, Anna communicates the main purpose of each task and uses vocabulary suited to the situation. The examples cover ${samples.map((entry) => entry.practice.title.toLowerCase()).join("; ")}. ${patterns.length ? "The recurring priorities in this selection are clearer connections, more precise phrasing or more specific supporting details, as described below." : "This selection is too small or varied to establish a recurring difficulty; compare additional examples with similar goals."} Different task levels and goals mean that score changes alone do not establish learning progress.`;
+  return { summary, patterns };
+}
