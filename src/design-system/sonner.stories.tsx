@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Button, Sonner, toast, ToastStack } from ".";
+const meta = { title: "Components/Core/Sonner", component: ToastStack, args: { title: "Resource updated", description: "Your changes have been saved.", action: { label: "Undo", onClick: () => {} } }, parameters: { layout: "centered" }, tags: ["autodocs"] } satisfies Meta<typeof ToastStack>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Default: Story = {};
+export const Simple: Story = { args: { description: undefined, action: undefined, icon: null } };
+export const Loading: Story = { args: { title: "Saving…", loading: true, description: undefined, action: undefined } };
+export const LineAndButton: Story = { args: { description: undefined } };
+export const TwoLevels: Story = { args: { levels: 2 } };
+export const ThreeLevels: Story = { args: { levels: 3 } };
+export const Interactive: Story = { render: () => <><Sonner id="story-sonner" /><Button onClick={() => toast("Resource updated", { toasterId: "story-sonner", description: "Your changes have been saved.", action: { label: "Undo", onClick: () => {} } })}>Show notification</Button></> };

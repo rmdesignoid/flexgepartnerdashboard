@@ -8,11 +8,178 @@
       "type": "registry:block",
       "title": "Flexge Button Story",
       "description": "Button component and Storybook stories for the Flexge Class Planner design system.",
-      "categories": ["flexge", "storybook", "core", "button"],
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "button"
+      ],
       "files": [
-        { "path": "registry/flexge/button-story/button.tsx", "type": "registry:component", "target": "@ui/button.tsx" },
-        { "path": "registry/flexge/button-story/button.css", "type": "registry:style", "target": "@ui/button.css" },
-        { "path": "registry/flexge/button-story/button.stories.tsx", "type": "registry:file", "target": "@ui/button.stories.tsx" }
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "src/design-system/button.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/button.stories.tsx"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     },
     {
@@ -20,40 +187,2173 @@
       "type": "registry:block",
       "title": "Flexge Fields Story",
       "description": "Form fields, search, select, invalid and disabled states for the Class Planner.",
-      "categories": ["flexge", "storybook", "core", "forms"],
-      "files": [{ "path": "src/design-system/fields.stories.tsx", "type": "registry:file", "target": "@ui/fields.stories.tsx" }]
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "src/design-system/fields.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/fields.stories.tsx"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
     },
     {
       "name": "badge-story",
       "type": "registry:block",
       "title": "Flexge Badge Story",
       "description": "Default, tonal and planning status badge stories for the Class Planner.",
-      "categories": ["flexge", "storybook", "core", "badge"],
-      "files": [{ "path": "src/design-system/badge.stories.tsx", "type": "registry:file", "target": "@ui/badge.stories.tsx" }]
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "badge"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "src/design-system/badge.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/badge.stories.tsx"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
     },
     {
       "name": "avatar-story",
       "type": "registry:block",
       "title": "Flexge Avatar Story",
       "description": "Initials, photos and stacked avatars with overflow examples.",
-      "categories": ["flexge", "storybook", "core", "avatar"],
-      "files": [{ "path": "src/design-system/avatar.stories.tsx", "type": "registry:file", "target": "@ui/avatar.stories.tsx" }]
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "avatar"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "src/design-system/avatar.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/avatar.stories.tsx"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
     },
     {
       "name": "tabs-story",
       "type": "registry:block",
       "title": "Flexge Tabs Story",
       "description": "Class Planner tabs with active, alternate and disabled states.",
-      "categories": ["flexge", "storybook", "core", "tabs"],
-      "files": [{ "path": "src/design-system/tabs.stories.tsx", "type": "registry:file", "target": "@ui/tabs.stories.tsx" }]
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "src/design-system/tabs.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/tabs.stories.tsx"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
     },
     {
       "name": "card-story",
       "type": "registry:block",
       "title": "Flexge Card Story",
       "description": "Card surface and empty state compositions for product panels.",
-      "categories": ["flexge", "storybook", "core", "card"],
-      "files": [{ "path": "src/design-system/card.stories.tsx", "type": "registry:file", "target": "@ui/card.stories.tsx" }]
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "card"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "src/design-system/card.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/card.stories.tsx"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "src/design-system/card-examples.tsx",
+          "type": "registry:component",
+          "target": "@ui/card-examples.tsx"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "sonner-story",
+      "type": "registry:block",
+      "title": "Flexge Sonner Story",
+      "description": "Reusable sonner component, variants and interactive examples.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "sonner"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "src/design-system/sonner.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/sonner.stories.tsx"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "table-story",
+      "type": "registry:block",
+      "title": "Flexge Table Story",
+      "description": "Reusable table component, variants and interactive examples.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "table"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "src/design-system/table.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/table.stories.tsx"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "primitives-story",
+      "type": "registry:block",
+      "title": "Flexge Core Primitives",
+      "description": "Checkbox, Radio, Switch, Slider, Toggle, Progress, Separator, Skeleton, Spinner, Label and LinkButton.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "src/design-system/primitives.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/primitives.stories.tsx"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "extended-story",
+      "type": "registry:block",
+      "title": "Flexge Extended Core",
+      "description": "Accessible overlays, menus, searchable selections, date pickers, toggle groups and breadcrumbs.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "src/design-system/extended.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/extended.stories.tsx"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "filter-select-story",
+      "type": "registry:block",
+      "title": "Flexge FilterSelect",
+      "description": "Multi-option filter with removable tags and Figma Delivery states.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "src/design-system/filter-select.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/filter-select.stories.tsx"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "pagination-story",
+      "type": "registry:block",
+      "title": "Flexge Pagination Story",
+      "description": "Figma pagination with controlled and uncontrolled page navigation, boundary states and automatic ellipses.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "src/design-system/pagination.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/pagination.stories.tsx"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "sidebar-story",
+      "type": "registry:block",
+      "title": "Flexge Sidebar Story",
+      "description": "Shared product sidebar navigation, expanded and collapsed states, disclosure groups and Figma comparison.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "files": [
+        {
+          "path": "src/design-system/index.tsx",
+          "type": "registry:component",
+          "target": "@ui/index.tsx"
+        },
+        {
+          "path": "src/design-system/styles.css",
+          "type": "registry:style",
+          "target": "@ui/styles.css"
+        },
+        {
+          "path": "src/design-system/tokens.css",
+          "type": "registry:style",
+          "target": "@ui/tokens.css"
+        },
+        {
+          "path": "src/design-system/documentation.css",
+          "type": "registry:style",
+          "target": "@ui/documentation.css"
+        },
+        {
+          "path": "public/design-system/chevron-down.svg",
+          "type": "registry:file",
+          "target": "public/design-system/chevron-down.svg"
+        },
+        {
+          "path": "public/design-system/spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner.svg"
+        },
+        {
+          "path": "public/design-system/toast-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-default.svg"
+        },
+        {
+          "path": "public/design-system/toast-loader.svg",
+          "type": "registry:file",
+          "target": "public/design-system/toast-loader.svg"
+        },
+        {
+          "path": "public/design-system/table-sort.svg",
+          "type": "registry:file",
+          "target": "public/design-system/table-sort.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-check.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-check.svg"
+        },
+        {
+          "path": "public/design-system/checkbox-minus.svg",
+          "type": "registry:file",
+          "target": "public/design-system/checkbox-minus.svg"
+        },
+        {
+          "path": "public/design-system/radio-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-off.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-on.svg"
+        },
+        {
+          "path": "public/design-system/radio-error-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/radio-error-off.svg"
+        },
+        {
+          "path": "public/design-system/switch-on.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-on.svg"
+        },
+        {
+          "path": "public/design-system/switch-off.svg",
+          "type": "registry:file",
+          "target": "public/design-system/switch-off.svg"
+        },
+        {
+          "path": "public/design-system/spinner-default.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-default.svg"
+        },
+        {
+          "path": "public/design-system/spinner-mirrored.svg",
+          "type": "registry:file",
+          "target": "public/design-system/spinner-mirrored.svg"
+        },
+        {
+          "path": "public/design-system/skeleton-avatar.svg",
+          "type": "registry:file",
+          "target": "public/design-system/skeleton-avatar.svg"
+        },
+        {
+          "path": "public/design-system/filter-search.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-search.svg"
+        },
+        {
+          "path": "public/design-system/filter-chevron.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-chevron.svg"
+        },
+        {
+          "path": "public/design-system/filter-remove.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-remove.svg"
+        },
+        {
+          "path": "public/design-system/filter-spinner.svg",
+          "type": "registry:file",
+          "target": "public/design-system/filter-spinner.svg"
+        },
+        {
+          "path": "public/design-system/pagination-previous.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-previous.svg"
+        },
+        {
+          "path": "public/design-system/pagination-next.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-next.svg"
+        },
+        {
+          "path": "public/design-system/pagination-ellipsis.svg",
+          "type": "registry:file",
+          "target": "public/design-system/pagination-ellipsis.svg"
+        },
+        {
+          "path": "src/design-system/sidebar.stories.tsx",
+          "type": "registry:file",
+          "target": "@ui/sidebar.stories.tsx"
+        },
+        {
+          "path": "src/design-system/sidebar-examples.tsx",
+          "type": "registry:file",
+          "target": "@ui/sidebar-examples.tsx"
+        },
+        {
+          "path": "public/flexge-logo.svg",
+          "type": "registry:file",
+          "target": "public/flexge-logo.svg"
+        },
+        {
+          "path": "public/flexge-mark.svg",
+          "type": "registry:file",
+          "target": "public/flexge-mark.svg"
+        },
+        {
+          "path": "public/teacher-avatar-andre.png",
+          "type": "registry:file",
+          "target": "public/teacher-avatar-andre.png"
+        },
+        {
+          "path": "src/design-system/palette.css",
+          "type": "registry:file",
+          "target": "@ui/palette.css"
+        },
+        {
+          "path": "src/design-system/palettes.ts",
+          "type": "registry:file",
+          "target": "@ui/palettes.ts"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
     }
   ]
 }

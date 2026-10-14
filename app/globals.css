@@ -2506,3 +2506,25 @@ body.theme-dark {
   .class-reporting__timeline-row > .class-reporting__status-group { grid-column: 2; grid-row: 5; }
   .class-reporting__timeline-row > .class-reporting__open { grid-column: 3; grid-row: 1 / span 5; }
 }
+
+/* Design system shortcut in the product sidebar. */
+.catalog-user-menu { z-index: 100; width: 210px; padding: 6px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--foreground); box-shadow: var(--ds-shadow-popover); }
+.catalog-user-menu :is(button,a) { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px; border: 0; border-radius: 6px; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.catalog-user-menu :is(button,a):hover, .catalog-user-menu :is(button,a):focus-visible { background: var(--secondary); }
+.sidebar__footer .catalog-shortcut { color: var(--primary); }
+.planner-shell.is-sidebar-collapsed { grid-template-rows: minmax(0, 1fr); }
+.sidebar.is-collapsed .sidebar__main { overflow-y: auto; overflow-x: hidden; }
+.sidebar.is-collapsed .sidebar__footer { flex: 0 0 auto; }
+.sidebar.is-collapsed .footer-actions > button[aria-label="Support"] { display: none; }
+.sidebar.is-collapsed .sidebar__footer .footer-actions .icon-button.catalog-shortcut { display: inline-grid; }
+
+.catalog-user-menu a,.catalog-shortcut { text-decoration:none; }
+
+/* The shared sidebar follows the existing product theme and compact viewport. */
+.planner-shell > .ds-sidebar { --ds-surface-soft:var(--sidebar);--ds-secondary:var(--sidebar-hover);--ds-muted:var(--muted);--ds-primary:var(--primary);--ds-primary-hover:var(--primary-hover); }
+.planner-shell > .ds-sidebar .nav-item:not(.is-active) { color:#3f516a; }
+.planner-shell.theme-dark > .ds-sidebar .nav-item:not(.is-active) { color:var(--foreground); }
+@media (max-height:780px) and (min-width:1024px) {
+ .planner-shell > .ds-sidebar .nav-group__title { height:25px; }
+ .planner-shell > .ds-sidebar .nav-item { height:29px; }
+}

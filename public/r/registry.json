@@ -13,6 +13,21 @@
         "storybook",
         "core",
         "button"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     },
     {
@@ -25,6 +40,21 @@
         "storybook",
         "core",
         "forms"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     },
     {
@@ -37,6 +67,21 @@
         "storybook",
         "core",
         "badge"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     },
     {
@@ -49,6 +94,21 @@
         "storybook",
         "core",
         "avatar"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     },
     {
@@ -61,6 +121,21 @@
         "storybook",
         "core",
         "tabs"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     },
     {
@@ -73,6 +148,210 @@
         "storybook",
         "core",
         "card"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "sonner-story",
+      "type": "registry:block",
+      "title": "Flexge Sonner Story",
+      "description": "Reusable sonner component, variants and interactive examples.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "sonner"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "table-story",
+      "type": "registry:block",
+      "title": "Flexge Table Story",
+      "description": "Reusable table component, variants and interactive examples.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "table"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "primitives-story",
+      "type": "registry:block",
+      "title": "Flexge Core Primitives",
+      "description": "Checkbox, Radio, Switch, Slider, Toggle, Progress, Separator, Skeleton, Spinner, Label and LinkButton.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "extended-story",
+      "type": "registry:block",
+      "title": "Flexge Extended Core",
+      "description": "Accessible overlays, menus, searchable selections, date pickers, toggle groups and breadcrumbs.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "filter-select-story",
+      "type": "registry:block",
+      "title": "Flexge FilterSelect",
+      "description": "Multi-option filter with removable tags and Figma Delivery states.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "pagination-story",
+      "type": "registry:block",
+      "title": "Flexge Pagination Story",
+      "description": "Figma pagination with controlled and uncontrolled page navigation, boundary states and automatic ellipses.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
+      ]
+    },
+    {
+      "name": "sidebar-story",
+      "type": "registry:block",
+      "title": "Flexge Sidebar Story",
+      "description": "Shared product sidebar navigation, expanded and collapsed states, disclosure groups and Figma comparison.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "primitives"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@radix-ui/react-select",
+        "sonner",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-toggle-group",
+        "react-day-picker",
+        "date-fns"
       ]
     }
   ]

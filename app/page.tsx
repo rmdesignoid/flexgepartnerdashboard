@@ -1,5 +1,7 @@
 "use client";
 
+import { Sidebar, SidebarMain, SidebarFooter, SidebarNavigation } from "../src/design-system";
+
 import {
   AlignJustify,
   AlignLeft,
@@ -2578,6 +2580,7 @@ export default function Home() {
   const [planningSelection, setPlanningSelection] = useState<{ event: PlannerEvent; date: Date; source?: "report" } | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== "undefined" && window.localStorage.getItem("planner-sidebar") === "collapsed");
   const [darkMode, setDarkMode] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [activeModule, setActiveModule] = useState<ModuleView>("planner");
   const [profileStudent, setProfileStudent] = useState<{ name: string; email: string } | null>(null);
   const isFullEnglishPlanner = activeModule === "plannerFullEnglish";
@@ -2979,8 +2982,8 @@ export default function Home() {
     <>
       <DesktopOnly />
       <main className={`planner-shell ${sidebarCollapsed ? "is-sidebar-collapsed" : ""} ${activeModule === "aiConversation" ? "is-ai-studio" : ""} ${planningSelection && planningSelection.source !== "report" ? "is-planning" : ""} ${darkMode ? "theme-dark" : ""}`}>
-        <aside className={`sidebar ${sidebarCollapsed ? "is-collapsed" : ""}`}>
-          <div className="sidebar__main">
+        <Sidebar collapsed={sidebarCollapsed}>
+          <SidebarMain>
             <div className="brand-row">
               {sidebarCollapsed ? (
                 <button className="brand-mark" onClick={toggleSidebar} aria-label="Expand sidebar" aria-expanded="false" data-tooltip="Expand menu">
@@ -2997,31 +3000,13 @@ export default function Home() {
 
             <button className="nav-item nav-item--standalone" aria-label="Get Started" data-tooltip="Get Started"><Flag size={19} /><span>Get Started</span></button>
 
-            <nav className="nav-groups" aria-label="Main navigation">
-              {navGroups.map((group) => (
-                <section className="nav-group" key={group.label}>
-                  <button
-                    type="button"
-                    className="nav-group__title"
-                    aria-expanded={!collapsedNavGroups.has(group.label)}
-                    aria-controls={`nav-group-${group.label.toLowerCase().replaceAll(" ", "-")}`}
-                    onClick={() => toggleNavGroup(group.label)}
-                  >
-                    <span>{group.label}</span>
-                    <ChevronDown size={13} />
-                  </button>
-                  <div
-                    className={`nav-group__items ${collapsedNavGroups.has(group.label) ? "is-collapsed" : ""}`}
-                    id={`nav-group-${group.label.toLowerCase().replaceAll(" ", "-")}`}
-                  >
-                    <div className="nav-group__items-inner">
-                      {group.items.map(([label, Icon]) => (
-                        <button
-                          className={`nav-item ${label === "Planner" && activeModule === "planner" ? "is-active" : ""} ${label === "Planner FullEnglish" && activeModule === "plannerFullEnglish" ? "is-active" : ""} ${label === "Lesson Log" && activeModule === "classReporting" ? "is-active" : ""} ${label === "Teacher Hours" && activeModule === "teacherHours" ? "is-active" : ""} ${label === "My Resources" && activeModule === "resources" ? "is-active" : ""} ${label === "My Resources v2" && activeModule === "resourcesV2" ? "is-active" : ""} ${label === "Students" && activeModule === "students" ? "is-active" : ""} ${label === "Student App" && activeModule === "studentApp" ? "is-active" : ""} ${label === "AI Studio" && activeModule === "aiConversation" ? "is-active" : ""}`}
-                          key={label}
-                          aria-label={label}
-                          data-tooltip={label}
-                          onClick={() => {
+            <SidebarNavigation
+              collapsed={sidebarCollapsed}
+              collapsedGroups={collapsedNavGroups}
+              onGroupToggle={toggleNavGroup}
+              activeId={({ planner: "Planner", plannerFullEnglish: "Planner FullEnglish", classReporting: "Lesson Log", teacherHours: "Teacher Hours", resources: "My Resources", resourcesV2: "My Resources v2", students: "Students", studentApp: "Student App", aiConversation: "AI Studio" } as Record<string, string>)[activeModule]}
+              groups={navGroups.map(group => ({ label: group.label, items: group.items.map(([label, Icon]) => ({ id: label, label, icon: <Icon size={18} strokeWidth={1.7} aria-hidden="true" /> })) }))}
+              onItemSelect={label => {
                             if (label !== "Students" && activeModule === "students") {
                               setProfileStudent(null);
                               window.history.replaceState({}, "", "/");
@@ -3068,22 +3053,14 @@ export default function Home() {
                               setSelectedEvent(null);
                               setPlanningSelection(null);
                             }
-                          }}
-                        >
-                          <Icon size={18} strokeWidth={1.7} />
-                          <span>{label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </section>
-              ))}
-            </nav>
-          </div>
+              }}
+            />
+          </SidebarMain>
 
-          <div className="sidebar__footer">
-            <button className="profile-button" aria-label="Open profile menu"><span className="avatar avatar--photo"><img src="/teacher-avatar-andre.png" alt="André Martins" /></span><ChevronDown size={15} /></button>
+          <SidebarFooter>
+            <Popover.Root open={userMenuOpen} onOpenChange={setUserMenuOpen}><Popover.Trigger asChild><button type="button" className="profile-button" aria-label="Open profile menu"><span className="avatar avatar--photo"><img src="/teacher-avatar-andre.png" alt="André Martins" /></span><ChevronDown size={15} /></button></Popover.Trigger><Popover.Portal><Popover.Content className="catalog-user-menu" side="top" align="start" sideOffset={10} collisionPadding={12} aria-label="User shortcuts"><a href="/design-system"><SwatchBook size={17} aria-hidden="true" />Design System</a></Popover.Content></Popover.Portal></Popover.Root>
             <div className="footer-actions">
+              <a href="/design-system" className="icon-button catalog-shortcut" aria-label="Design System" title="Design System" data-tooltip="Design System"><SwatchBook size={17} aria-hidden="true" /></a>
               <button className="icon-button" aria-label="Support"><LifeBuoy size={17} /></button>
               <button className="icon-button" aria-label="Announcements"><Megaphone size={17} /></button>
               <button
@@ -3096,8 +3073,8 @@ export default function Home() {
                 <SunMoon size={17} />
               </button>
             </div>
-          </div>
-        </aside>
+          </SidebarFooter>
+        </Sidebar>
 
         <section className="workspace">
           {planningSelection?.source === "report" ? <>

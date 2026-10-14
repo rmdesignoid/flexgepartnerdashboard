@@ -1,0 +1,13 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { FilterSelect, FormField } from ".";
+const meta = { title: "Components/Core/FilterSelect", component: FilterSelect, tags: ["autodocs"], parameters: { layout: "centered" }, args: { label: "Options", options: [{ value: "one", label: "Option 1" }, { value: "two", label: "Option 2" }, { value: "three", label: "Option 3" }] }, decorators: [Story => <div style={{ width: 400, maxWidth: "100%" }}><Story /></div>] } satisfies Meta<typeof FilterSelect>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Placeholder: Story = {};
+export const Selected: Story = { args: { defaultValue: ["one"] } };
+export const Multiple: Story = { args: { defaultValue: ["one", "two"] } };
+export const OpenPopover: Story = { args: { defaultValue: ["one"], defaultOpen: true } };
+export const Loading: Story = { args: { loading: true } };
+export const Disabled: Story = { args: { disabled: true } };
+export const Invalid: Story = { args: { invalid: true } };
+export const RequiredField: Story = { render: args => <FormField label="Learning levels" required error="Select at least one option."><FilterSelect {...args} name="levels" /></FormField> };

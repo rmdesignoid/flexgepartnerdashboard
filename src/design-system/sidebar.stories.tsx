@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { CalendarDays, Users } from "lucide-react";
+import { Sidebar, SidebarMain, SidebarNavigation } from ".";
+import { SidebarExamples } from "./sidebar-examples";
+const meta = { title: "Components/Core/Sidebar", component: Sidebar, tags: ["autodocs"], parameters: { layout: "centered" } } satisfies Meta<typeof Sidebar>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Expanded: Story = { render: () => <SidebarExamples comparison={false} /> };
+export const Collapsed: Story = { render: () => <SidebarExamples defaultCollapsed comparison={false} /> };
+export const FigmaComparison: Story = { render: () => <SidebarExamples /> };
+export const ItemStates: Story = { render: () => <div style={{ height: 320 }}><Sidebar><SidebarMain><SidebarNavigation activeId="planner" groups={[{ label: "Class Management", items: [{ id: "planner", label: "Planner", icon: <CalendarDays size={18} />, badge: 3 }, { id: "students", label: "Students", icon: <Users size={18} />, disabled: true }] }]} /></SidebarMain></Sidebar></div> };

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ReactNode } from "react";
+import { Check, Eye, UserRound } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import { FormField, Input, SearchInput, Select, Textarea } from ".";
 
 const meta = { title: "Components/Core/Fields", tags: ["autodocs"], parameters: { layout: "centered" } } satisfies Meta;
@@ -20,3 +21,11 @@ export const States: Story = { render: () => frame(<>
   <FormField label="Disabled"><Input disabled defaultValue="Disabled value" /></FormField>
   <FormField label="Invalid" error="This field is required."><Input invalid data-state="invalid" defaultValue="Invalid value" /></FormField>
 </>) };
+
+export const SelectGroups: Story = { render: () => frame(<FormField label="Level"><Select defaultValue="" name="level"><option value="">All levels</option><optgroup label="Basic"><option value="A1">A1 — Beginner</option><option value="A2">A2 — Elementary</option></optgroup><optgroup label="Independent"><option value="B1">B1 — Intermediate</option><option value="B2" disabled>B2 — Unavailable</option></optgroup></Select></FormField>) };
+export const SelectForm: Story = { render: () => frame(<form onSubmit={event => { event.preventDefault(); }} style={{ display: "grid", gap: 16 }}><FormField label="Required level" required><Select name="level" defaultValue=""><option value="">Choose a level</option><option value="A1">A1</option><option value="A2">A2</option></Select></FormField><button type="submit">Submit</button><button type="reset">Reset</button></form>) };
+
+export const InputIcons: Story = { render: () => frame(<FormField label="Name"><Input startIcon={<UserRound />} endIcon={<Check />} placeholder="Full name" /></FormField>) };
+function PasswordWithAction() { const [visible, setVisible] = useState(false); return frame(<FormField label="Password"><Input type={visible ? "text" : "password"} defaultValue="Example" endAction={{ icon: <Eye />, label: visible ? "Hide password" : "Show password", onClick: () => setVisible(!visible) }} /></FormField>); }
+export const InputAction: Story = { render: () => <PasswordWithAction /> };
+export const SelectIcon: Story = { render: () => frame(<FormField label="Level"><Select startIcon={<UserRound />} defaultValue="A1"><option value="A1">A1</option><option value="A2">A2</option></Select></FormField>) };
