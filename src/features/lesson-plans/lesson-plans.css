@@ -1,0 +1,44 @@
+.lesson-plans { display:flex;flex-direction:column;height:100%;min-height:0;color:var(--ds-foreground);background:var(--ds-surface); }
+.lesson-plans-header { display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px;padding:12px 24px; }
+.lesson-plans-header h1 { margin:0;font-size:16px;font-weight:600;line-height:24px; }
+.lesson-plans-header p { margin:4px 0 0;color:var(--ds-muted);font-size:12px;line-height:16px; }
+.lesson-plans-header-actions { display:flex;align-items:center;gap:8px; }
+.lesson-plans-tabs .ds-tabs { padding:8px 24px 0; }
+.lesson-plans-tabs .ds-icon-slot { width:20px;height:20px; }
+.lesson-plans-filters { display:flex;flex-wrap:wrap;gap:8px;padding:16px 24px;background:var(--ds-surface-soft); }
+.lesson-plans-search { width:200px; }
+.lesson-plans-search .ds-icon-slot { width:20px;height:20px; }
+.lesson-plans-level { width:144px; }
+.lesson-plans-topic { width:227px; }
+.lesson-plans-filters .ds-select { color:var(--ds-muted); }
+.lesson-plans-list { min-height:0;overflow:auto; }
+.lesson-plans-table { width:100%;min-width:960px;table-layout:fixed; }
+.lesson-plans-table .ds-table-head:nth-child(2) { width:240px; }
+.lesson-plans-table .ds-table-head:nth-child(3) { width:204px; }
+.lesson-plans-table .ds-table-head { height:40px;padding:2px 24px;font-weight:400; }
+.lesson-plans-table .ds-table-sort { font-weight:400; }
+.lesson-plans-table .ds-table-cell { height:146px;padding:16px 24px; }
+.lesson-plan-detail { display:flex;align-items:center;gap:8px;min-width:0; }
+.lesson-plan-thumbnail { display:grid;place-items:center;flex-shrink:0;width:187px;height:112px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-sm);background:linear-gradient(91deg,var(--ds-color-flexge-blue-100),var(--ds-color-slate-50)); }
+.lesson-plan-content { min-width:0;display:flex;flex-direction:column;gap:4px; }
+.lesson-plan-content h2 { margin:0;font-size:14px;font-weight:500;line-height:21px; }
+.lesson-plan-content p { margin:0;color:var(--ds-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:21px; }
+.lesson-plan-metadata { display:flex;flex-direction:column;gap:4px;margin-top:4px; }
+.lesson-plan-tags { display:flex;align-items:center;gap:4px;flex-wrap:wrap; }
+.lesson-plan-tags .ds-badge { height:24px;padding:2px 8px;background:var(--ds-surface-soft);border-color:var(--ds-border);color:var(--ds-muted);font-size:12px;line-height:16px; }
+.lesson-plan-curriculum .ds-badge { background:var(--ds-color-flexge-blue-50);border-color:var(--ds-color-flexge-blue-300);color:var(--ds-color-flexge-blue-700); }
+.lesson-plan-status-line { display:flex;align-items:center;gap:8px;white-space:nowrap; }
+.lesson-plan-applications { font-size:12px; }
+.lesson-plan-status { display:flex;align-items:flex-start;flex-direction:column;gap:8px;min-width:0; }
+.lesson-plan-updated { color:var(--ds-muted);font-size:12px;line-height:16px;white-space:nowrap; }
+.lesson-plan-status .ds-badge { height:24px;padding:2px 8px;border:1px solid var(--ds-border);border-radius:var(--ds-radius-full); }
+.lesson-plan-status .ds-badge--success { background:var(--ds-color-teal-50);border-color:var(--ds-color-teal-300);color:var(--ds-color-teal-900); }
+.lesson-plan-actions { display:flex;align-items:center;justify-content:flex-end;gap:8px;white-space:nowrap; }
+.lesson-plans-footer { display:flex;justify-content:space-between;align-items:center;gap:16px;padding:8px 20px;color:var(--ds-muted);min-height:40px; }
+.lesson-plans-footer .ds-pagination-list { gap:8px; }
+.lesson-plans-empty { flex:1;min-height:300px;display:grid;place-items:center; }
+.lesson-plans-notice { margin:0;padding:0 24px;min-height:20px;font-size:12px;color:var(--ds-muted); }
+.lesson-plans img { flex-shrink:0;max-width:none; }
+[data-theme="dark"].lesson-plans .lesson-plan-thumbnail { background:var(--ds-surface-soft); }
+[data-theme="dark"].lesson-plans img[src$=".svg"] { filter:brightness(0) invert(1); }
+@media(max-width:1200px) { .lesson-plan-thumbnail { width:150px; } .lesson-plans-table .ds-table-cell { padding-inline:16px; } }

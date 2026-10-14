@@ -83,6 +83,9 @@ import type { FormEvent, KeyboardEvent, MouseEvent, PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import * as Popover from "@radix-ui/react-popover";
+import { applicationStorageKey, readApplications, reviewApplications, snapshotForPlan, type Application, type ApplicationRequest, type PlanSnapshot, type PlannerClass } from "../src/features/lesson-plans/bulk-planning";
+import type { LessonPlan } from "../src/features/lesson-plans/data";
+import { LessonPlansView } from "../src/features/lesson-plans/LessonPlansView";
 import { TeacherHoursView } from "../src/features/teacher-hours/TeacherHoursView";
 import { AIConversationView } from "../src/features/ai-conversation/AIConversationView";
 import { StudentOralProductionHistory } from "../src/features/ai-conversation/StudentOralProductionHistory";
@@ -103,6 +106,8 @@ type PlannerEvent = {
   description?: string;
   observation?: string;
   classPlanId?: string;
+  appliedPlan?: PlanSnapshot;
+  baseVersion?: string;
   scheduledDate?: string;
   studentEmails?: string[];
   teacherNames?: string[];
@@ -133,7 +138,7 @@ type CalendarFilters = {
   planningStatus: string[];
 };
 type CalendarToast = { message: string; detail?: string; tone?: "success" | "error" | "info"; action?: { label: string; onClick: () => void } };
-type ModuleView = "planner" | "plannerFullEnglish" | "classReporting" | "teacherHours" | "resources" | "resourcesV2" | "students" | "studentApp" | "aiConversation";
+type ModuleView = "lessonPlans" | "planner" | "plannerFullEnglish" | "classReporting" | "teacherHours" | "resources" | "resourcesV2" | "students" | "studentApp" | "aiConversation";
 type ResourceRecord = {
   title: string;
   level: string;
@@ -382,6 +387,7 @@ function PopoverEventIcon({ event }: { event: PlannerEvent }) {
 }
 
 function classPlanForEvent(event: PlannerEvent) {
+  if (event.appliedPlan) return event.appliedPlan;
   const seededEvent = initialEvents.find((item) => String(item.id) === String(event.id).replace("seed-", ""));
   return initialClassPlans.find((plan) => plan.id === (event.classPlanId ?? seededEvent?.classPlanId));
 }
@@ -2562,7 +2568,37 @@ export default function Home() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [weekMotionDirection, setWeekMotionDirection] = useState<"previous" | "next" | null>(null);
   const [plannerEvents, setPlannerEvents] = useState<PlannerEvent[]>([]);
-  const events = plannerEvents;
+  const [planApplications, setPlanApplications] = useState<Application[]>([]);
+  useEffect(() => { setPlanApplications(readApplications()); }, []);
+  const eventVersion = (event: PlannerEvent) => JSON.stringify([event.updatedAt ?? "", event.classPlanId ?? "", event.status, event.scheduledDate, event.startMinutes, event.duration]);
+  const events = useMemo(() => plannerEvents.map(event => {
+    const application = [...planApplications].reverse().find(record => record.eventId === String(event.id) && record.eventVersion === eventVersion(event));
+    return application ? { ...event, status: "Planned" as EventStatus, classPlanId: application.snapshot.id, appliedPlan: application.snapshot, baseVersion: eventVersion(event) } : event;
+  }), [plannerEvents, planApplications]);
+  const planningClasses: PlannerClass[] = events.filter(isClassEvent).map(event => ({
+    id: String(event.id), title: eventDisplayName(event), date: reportingDateKey(event), startMinutes: event.startMinutes, duration: event.duration,
+    status: event.status, classStatus: event.classStatus, studentName: event.studentName, groupName: event.kind === "individual" ? undefined : event.groupName ?? event.title, teacherNames: event.teacherNames, planId: event.classPlanId, planTitle: classPlanForEvent(event)?.title,
+    version: event.baseVersion ?? eventVersion(event), sourceId: event.appliedPlan?.sourceId, sourceVersion: event.appliedPlan?.sourceVersion,
+  }));
+  function applyLessonPlan(plan: LessonPlan, requests: ApplicationRequest[]) {
+    const results = reviewApplications(planningClasses, plan, requests);
+    const batchId = crypto.randomUUID();
+    const appliedAt = new Date().toISOString();
+    const records: Application[] = results.filter(result => result.success).map(result => {
+      const item = planningClasses.find(candidate => candidate.id === result.id)!;
+      return { id: crypto.randomUUID(), batchId, eventId: item.id, eventVersion: item.version, classTitle: item.title, date: item.date, startMinutes: item.startMinutes, appliedAt, snapshot: snapshotForPlan(plan) };
+    });
+    if (!records.length) return results;
+    try {
+      const next = [...planApplications, ...records];
+      localStorage.setItem(applicationStorageKey, JSON.stringify(next));
+      setPlanApplications(next);
+      classPlanCache.clear();
+      return results;
+    } catch {
+      return results.map(result => result.success ? { ...result, success: false, message: "Could not save in this browser. Free storage and try again." } : result);
+    }
+  }
   const [calendarFilters, setCalendarFilters] = useState<CalendarFilters>(emptyCalendarFilters);
   const filteredEvents = events.filter((event) => {
     if (calendarFilters.classStatus.length && (!event.classStatus || !calendarFilters.classStatus.includes(event.classStatus))) return false;
@@ -3004,9 +3040,14 @@ export default function Home() {
               collapsed={sidebarCollapsed}
               collapsedGroups={collapsedNavGroups}
               onGroupToggle={toggleNavGroup}
-              activeId={({ planner: "Planner", plannerFullEnglish: "Planner FullEnglish", classReporting: "Lesson Log", teacherHours: "Teacher Hours", resources: "My Resources", resourcesV2: "My Resources v2", students: "Students", studentApp: "Student App", aiConversation: "AI Studio" } as Record<string, string>)[activeModule]}
+              activeId={({ lessonPlans: "My Lesson Plans", planner: "Planner", plannerFullEnglish: "Planner FullEnglish", classReporting: "Lesson Log", teacherHours: "Teacher Hours", resources: "My Resources", resourcesV2: "My Resources v2", students: "Students", studentApp: "Student App", aiConversation: "AI Studio" } as Record<string, string>)[activeModule]}
               groups={navGroups.map(group => ({ label: group.label, items: group.items.map(([label, Icon]) => ({ id: label, label, icon: <Icon size={18} strokeWidth={1.7} aria-hidden="true" /> })) }))}
               onItemSelect={label => {
+                            if (label === "My Lesson Plans") {
+                              setActiveModule("lessonPlans");
+                              setSelectedEvent(null);
+                              setPlanningSelection(null);
+                            }
                             if (label !== "Students" && activeModule === "students") {
                               setProfileStudent(null);
                               window.history.replaceState({}, "", "/");
@@ -3098,7 +3139,10 @@ export default function Home() {
               onNavigateReport={(item) => setPlanningSelection({ event: item, date: reportingDate(item), source: "report" })}
               onBack={() => setPlanningSelection(null)}
             />
-          ) : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView profileStudent={profileStudent} onOpenProfile={openStudentProfile} onReturn={returnToStudents} /> : activeModule === "studentApp" ? <StudentAppView /> : <>
+          ) : activeModule === "lessonPlans" ? <LessonPlansView darkMode={darkMode} classes={planningClasses} applications={planApplications} onApply={applyLessonPlan} onOpenClass={id => {
+            const event = events.find(item => String(item.id) === id);
+            if (event) { setActiveModule("planner"); setPlanningSelection({ event, date: reportingDate(event) }); setSelectedEvent(null); }
+          }} /> : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView profileStudent={profileStudent} onOpenProfile={openStudentProfile} onReturn={returnToStudents} /> : activeModule === "studentApp" ? <StudentAppView /> : <>
           <div className="calendar-toolbar">
             <div className="toolbar-left">
               <CalendarViewTabs value={calendarPresentation} onValueChange={changeCalendarPresentation} />

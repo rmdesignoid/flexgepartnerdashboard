@@ -1,0 +1,3 @@
+.ds-popover.calendar-filter-menu { width:min(680px,calc(100vw - 32px));padding:16px; }
+.ds-popover.calendar-filter-options { width:240px;padding:4px; }
+@media(max-width:640px) { .ds-popover.calendar-filter-menu { width:min(360px,calc(100vw - 24px)); } }
