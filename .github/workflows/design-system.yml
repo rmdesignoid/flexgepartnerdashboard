@@ -1,0 +1,26 @@
+name: Design System
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  design-system:
+    name: Design System validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run test:design-system
+      - run: npm run build-storybook
+      - run: npm run build:vercel
+      - run: node --test tests/design-system-route.test.mjs tests/vercel-deployment.test.mjs

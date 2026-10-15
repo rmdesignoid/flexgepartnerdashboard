@@ -1,4 +1,33 @@
-# vinext-starter
+# Flexge Partner Dashboard
+
+## Design System: ponto de partida obrigatório
+
+Toda nova interface e protótipo deve usar o **Flexge Design System** de
+[`src/design-system/`](src/design-system/README.md). Seus componentes e tokens são
+a fonte de verdade da UI. Comece por esse guia antes de criar ou alterar telas.
+As regras para agentes estão em [`AGENTS.md`](AGENTS.md), com pontos de entrada
+para Copilot, Cursor e Claude que remetem ao mesmo guia.
+
+Para colaborar, crie uma branch, reutilize o núcleo e abra um pull request com as
+validações do template. Ao clonar ou criar um fork, mantenha esses arquivos, o
+núcleo, os assets em `public/design-system/`, as stories e os testes. Mudanças
+compartilhadas devem voltar ao repositório de origem por PR; forks não recebem
+atualizações automaticamente. Consulte o fluxo no guia do Design System.
+
+```bash
+npm ci
+npm run dev
+# Catálogo: http://localhost:3000/design-system (ou a porta indicada pelo dev)
+npm run storybook
+npm run test:design-system
+npm run build:vercel
+```
+
+A publicação oficial é no **Vercel**, conforme [`VERCEL.md`](VERCEL.md). As notas
+abaixo descrevem a base técnica original; referências a Sites são legado e não
+alteram esse destino.
+
+## Base técnica do starter
 
 A clean full-stack starter running on
 [vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and

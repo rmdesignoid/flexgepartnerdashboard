@@ -9,6 +9,7 @@
     "dev": "vinext dev",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "test:design-system": "node --test tests/design-system.test.mjs tests/design-system-colors.test.mjs",
     "registry:build": "node scripts/build-registry.mjs",
     "registry:validate": "node scripts/validate-registry.mjs",
     "build": "vinext build",

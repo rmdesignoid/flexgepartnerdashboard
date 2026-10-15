@@ -1,0 +1,12 @@
+---
+description: Mandatory Flexge Design System and repository conventions
+alwaysApply: true
+---
+
+Read and follow `AGENTS.md` and `src/design-system/README.md` before UI work.
+Use the Flexge components from `@/src/design-system` and existing semantic
+`--ds-*` tokens for every screen and prototype, including clones and forks.
+Compose existing components; extend the shared core for reusable gaps. Keep
+business logic in features and do not override core styling locally. The guide
+defines the source hierarchy, stories, accessibility and validation workflow.
+Follow `VERCEL.md` for publishing.
