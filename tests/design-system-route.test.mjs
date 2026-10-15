@@ -2,6 +2,19 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import server from '../.vercel/output/functions/__server.func/index.mjs';
 
+test('ToggleGroup includes required-selection variation and preserves legacy bookmarks', async () => {
+  for (const component of ['togglegroup', 'segmentedcontrol']) {
+    const response = await server.fetch(new Request(`https://example.test/design-system?component=${component}`));
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /<h2[^>]*>ToggleGroup<\/h2>/);
+    assert.match(html, /<h2[^>]*>SegmentedControl<\/h2>/);
+    assert.match(html, /ToggleGroup variation that keeps exactly one option selected/);
+    assert.match(html, /href="\/design-system\?component=togglegroup"[^>]*aria-current="page"/);
+    assert.doesNotMatch(html, /href="\/design-system\?component=segmentedcontrol"/);
+  }
+});
+
 test('design system has an independent English page with a route back to Planner', async () => {
   const response = await server.fetch(new Request('https://example.test/design-system'));
   assert.equal(response.status, 200);
@@ -14,7 +27,7 @@ test('design system has an independent English page with a route back to Planner
   assert.doesNotMatch(html, /Fundamentos|Biblioteca de interface|Salvar alterações|Guia de uso/);
 });
 
-for (const [page, title, content] of [['logo', 'Logo', 'Full logo'], ['colors', 'Colors', 'Semantic colors'], ['typography', 'Typography', 'Type scale'], ['icons', 'Icons', 'Icon library'], ['spacing', 'Spacing', 'Spacing scale'], ['radius', 'Radius', 'Corner radii'], ['shadows', 'Shadows', 'Elevation']]) {
+for (const [page, title, content] of [['logo', 'Logo', 'Full logo'], ['colors', 'Colors', 'Semantic colors'], ['typography', 'Typography', 'Type scale'], ['icons', 'Icons', 'Icon library'], ['spacing', 'Spacing', 'Spacing scale'], ['radius', 'Radius', 'Corner radii'], ['shadows', 'Shadows', 'Elevation'], ['motion', 'Motion', 'Purposeful feedback']]) {
   test(`foundation ${page} has an independent address and selected navigation`, async () => {
     const response = await server.fetch(new Request(`https://example.test/design-system/foundations/${page}`));
     assert.equal(response.status, 200);

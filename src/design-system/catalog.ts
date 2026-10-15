@@ -210,7 +210,7 @@ export const coreCatalog: CatalogEntry[] = [
 
   "group": "Forms",
 
-  "description": "A compact choice with exactly one active option.",
+  "description": "A ToggleGroup variation that keeps exactly one option selected.",
 
   "variants": "single selection / default \u00b7 focus \u00b7 disabled",
 
@@ -218,7 +218,7 @@ export const coreCatalog: CatalogEntry[] = [
 
   "example": "<SegmentedControl label=\"Size\" items={[{ value: \"small\", label: \"Small\" }, { value: \"regular\", label: \"Regular\" }]} defaultValue=\"regular\" />",
 
-  "guidance": "Use for short lists. Supply an initial value. Clicking the active item preserves selection. Arrows navigate; the group exposes radio semantics.",
+  "guidance": "Uses the same core and visual states as ToggleGroup, with required single selection. Use for short lists. Supply an initial value. Clicking the active item preserves selection. Arrows navigate; the group exposes radio semantics.",
 
   "figmaNode": ""
 
@@ -514,7 +514,7 @@ export const coreCatalog: CatalogEntry[] = [
 
     "variants": "mini · small · regular · large / startIcon · endIcon / disabled",
 
-    "props": "href, size, roundness, disabled, startIcon, endIcon + anchor props and ref",
+    "props": "href, variant, size, roundness, disabled, startIcon, endIcon + anchor props and ref",
 
     "example": "<LinkButton href=\"/students\" endIcon={<ArrowRight />}>Students</LinkButton>",
 
@@ -1344,7 +1344,7 @@ export const componentFamilies: ComponentFamily[] = [
 
 
 
-componentFamilies.push({"id": "popover", "label": "Popover", "members": ["Popover"]},{"id": "dialog", "label": "Dialog", "members": ["Dialog"]},{"id": "alertdialog", "label": "AlertDialog", "members": ["AlertDialog"]},{"id": "dropdownmenu", "label": "DropdownMenu", "members": ["DropdownMenu"]},{"id": "contextmenu", "label": "ContextMenu", "members": ["ContextMenu"]},{"id": "combobox", "label": "Combobox", "members": ["Combobox"]},{"id": "multiselect", "label": "MultiSelect", "members": ["MultiSelect"]},{"id": "segmentedcontrol", "label": "SegmentedControl", "members": ["SegmentedControl"]},{"id": "togglegroup", "label": "ToggleGroup", "members": ["ToggleGroup"]},{"id": "datepicker", "label": "DatePicker", "members": ["DatePicker"]},{"id": "daterangepicker", "label": "DateRangePicker", "members": ["DateRangePicker"]},{"id": "breadcrumb", "label": "Breadcrumb", "members": ["Breadcrumb"]});
+componentFamilies.push({"id": "popover", "label": "Popover", "members": ["Popover"]},{"id": "dialog", "label": "Dialog", "members": ["Dialog"]},{"id": "alertdialog", "label": "AlertDialog", "members": ["AlertDialog"]},{"id": "dropdownmenu", "label": "DropdownMenu", "members": ["DropdownMenu"]},{"id": "contextmenu", "label": "ContextMenu", "members": ["ContextMenu"]},{"id": "combobox", "label": "Combobox", "members": ["Combobox"]},{"id": "multiselect", "label": "MultiSelect", "members": ["MultiSelect"]},{"id": "togglegroup", "label": "ToggleGroup", "members": ["ToggleGroup", "SegmentedControl"]},{"id": "datepicker", "label": "DatePicker", "members": ["DatePicker"]},{"id": "daterangepicker", "label": "DateRangePicker", "members": ["DateRangePicker"]},{"id": "breadcrumb", "label": "Breadcrumb", "members": ["Breadcrumb"]});
 
 componentFamilies.push({ id: "filterselect", label: "FilterSelect", members: ["FilterSelect"] });
 
@@ -1361,6 +1361,13 @@ export const foundationPages = [
  { id: "icons", label: "Icons", description: "The icon library, slot sizes and interactive component examples." },
  { id: "spacing", label: "Spacing", description: "Shared spacing tokens for consistent layouts." },
  { id: "radius", label: "Radius", description: "Corner-radius tokens for controls and surfaces." },
+ { id: "motion", label: "Motion", description: "Shared timing, easing and accessible feedback for component interactions." },
  { id: "shadows", label: "Shadows", description: "Elevation tokens for surfaces and floating content." },
 ] as const;
 export type FoundationId = typeof foundationPages[number]["id"];
+
+/** Keep existing bookmarked component URLs working after regrouping the catalog. */
+export function resolveComponentFamily(component = "button") {
+  const id = component === "segmentedcontrol" ? "togglegroup" : component;
+  return componentFamilies.find(entry => entry.id === id) ?? componentFamilies.find(entry => entry.id === "button")!;
+}

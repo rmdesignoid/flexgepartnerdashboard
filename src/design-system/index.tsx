@@ -14,6 +14,8 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Toaster as SonnerToaster, toast as sonnerToast, type ToasterProps } from "sonner";
 import { Check, Search, X, ChevronRight, CalendarDays } from "lucide-react";
 import "./styles.css";
+import "./motion.css";
+const DialogLayerContext = createContext(0);
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "ghost-muted" | "destructive" | "accent" | "danger";
 export type ControlSize = "mini" | "small" | "regular" | "large" | "sm" | "md" | "lg";
 export type AvatarSize = "extra-tiny" | "tiny" | "small" | "regular" | "sm" | "md" | "lg";
@@ -41,7 +43,7 @@ export function SidebarNavigation({ groups, activeId, collapsed = false, collaps
   return <nav {...props} className={cx("nav-groups", className)} aria-label={props["aria-label"] ?? "Main navigation"}>{groups.map((group, index) => {
     const id = `${instanceId}-group-${index}`;
     const expanded = collapsed || !hiddenGroups.has(group.label);
-    return <section className="nav-group" key={group.label}><button type="button" className="nav-group__title" aria-expanded={expanded} aria-controls={id} onClick={() => toggleGroup(group.label)}><span>{group.label}</span><ChevronRight size={13} aria-hidden="true" className="ds-sidebar-group-chevron" /></button><div id={id} className={cx("nav-group__items", !expanded && "is-collapsed")} hidden={!expanded}><div className="nav-group__items-inner">{group.items.map(item => {
+    return <section className="nav-group" key={group.label}><button type="button" className="nav-group__title" aria-expanded={expanded} aria-controls={id} onClick={() => toggleGroup(group.label)}><span>{group.label}</span><ChevronRight size={13} aria-hidden="true" className="ds-sidebar-group-chevron" /></button><div id={id} className={cx("nav-group__items", !expanded && "is-collapsed")} aria-hidden={!expanded || undefined} inert={!expanded || undefined}><div className="nav-group__items-inner">{group.items.map(item => {
       const active = item.id === activeId;
       const common = { className: cx("nav-item", active && "is-active"), "aria-label": item.label, "aria-current": active ? "page" as const : undefined, "data-tooltip": item.label, title: collapsed ? item.label : undefined };
       const content = <>{item.icon}<span className="ds-sidebar-item-label">{item.label}</span>{item.badge !== undefined && <span className="ds-sidebar-badge">{item.badge}</span>}</>;
@@ -101,7 +103,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ i
   return start || end || endAction ? <span className={cx("ds-input-shell", !!start && "has-leading", !!end && "has-trailing", !!endAction && "has-action")}>
     {start && <span className="ds-input-decoration ds-input-decoration--leading" aria-hidden="true">{start}</span>}{input}
     {end && <span className="ds-input-decoration ds-input-decoration--trailing" aria-hidden="true">{end}</span>}
-    {endAction && <button className="ds-input-action" type="button" aria-label={endAction.label} disabled={props.disabled || endAction.disabled} onClick={() => { endAction.onClick(); inputRef.current?.focus(); }}><IconSlot>{endAction.icon}</IconSlot></button>}
+    {endAction && <IconButton className="ds-input-action" size="small" variant="ghost-muted" label={endAction.label} disabled={props.disabled || endAction.disabled} onClick={() => { endAction.onClick(); inputRef.current?.focus(); }} icon={endAction.icon} />}
   </span> : input;
 });
 export const SearchInput = forwardRef<HTMLInputElement, InputProps>(function SearchInput({ startIcon, leading, ...props }, ref) { return <Input type="search" {...props} leading={leading} startIcon={startIcon !== undefined ? startIcon : leading === undefined ? <Search /> : undefined} ref={ref} />; });
@@ -229,7 +231,7 @@ export const Sonner = forwardRef<HTMLElement, SonnerProps>(function Sonner({ the
   return <div className="ds-sonner-host" data-theme={theme}><SonnerToaster ref={ref} theme={theme} position="bottom-center" visibleToasts={3} gap={16} offset={32} mobileOffset={16} containerAriaLabel="Notifications" {...props} style={{ "--width": "356px", ...style } as React.CSSProperties} icons={{ loading: <img className="ds-toast-loader" src="/design-system/toast-loader.svg" alt="" />, ...normalizedIcons }} toastOptions={{ ...toastOptions, classNames: { ...toastOptions?.classNames, toast: cx("ds-toast", toastOptions?.classNames?.toast), title: "ds-toast-title", description: "ds-toast-description", actionButton: "ds-toast-action", cancelButton: "ds-toast-action", icon: "ds-toast-icon" } }} /></div>;
 });
 export function ToastCard({ title, description, loading, icon = <img src="/design-system/toast-default.svg" alt="" />, action }: { title: ReactNode; description?: ReactNode; loading?: boolean; icon?: ReactNode; action?: { label: string; onClick: () => void } }) {
-  return <div className="ds-toast-card"><span className="ds-toast-icon" aria-hidden="true">{loading ? <img className="ds-toast-loader" src="/design-system/toast-loader.svg" alt="" /> : <IconSlot size={24}>{icon}</IconSlot>}</span><div className="ds-toast-content"><div className="ds-toast-title">{title}</div>{description && <div className="ds-toast-description">{description}</div>}</div>{action && <button type="button" className="ds-toast-action" onClick={action.onClick}>{action.label}</button>}</div>;
+  return <div className="ds-toast-card"><span className="ds-toast-icon" aria-hidden="true">{loading ? <img className="ds-toast-loader" src="/design-system/toast-loader.svg" alt="" /> : <IconSlot size={24}>{icon}</IconSlot>}</span><div className="ds-toast-content"><div className="ds-toast-title">{title}</div>{description && <div className="ds-toast-description">{description}</div>}</div>{action && <Button size="mini" variant="secondary" className="ds-toast-action" onClick={action.onClick}>{action.label}</Button>}</div>;
 }
 export function ToastStack({ levels = 1, ...props }: Parameters<typeof ToastCard>[0] & { levels?: 1 | 2 | 3 }) {
   return <div className={`ds-toast-stack ds-toast-stack--${levels}`}>{Array.from({ length: levels - 1 }, (_, index) => <div key={index} className="ds-toast-backdrop" aria-hidden="true" />)}<ToastCard {...props} /></div>;
@@ -240,7 +242,7 @@ export const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTML
 export const TableFooter = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(function TableFooter({ className, ...props }, ref) { return <tfoot {...props} ref={ref} className={cx("ds-table-footer", className)} />; });
 export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElement> & { selected?: boolean; state?: "default" | "hover" | "active" | "selected" }>(function TableRow({ className, selected, state, ...props }, ref) { return <tr {...props} ref={ref} className={cx("ds-table-row", className)} data-state={selected ? "selected" : state} />; });
 export const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLTableCellElement> & { align?: "left" | "right"; onSort?: () => void; sortDirection?: "none" | "ascending" | "descending" }>(function TableHead({ className, align = "left", scope = "col", onSort, sortDirection = "none", children, ...props }, ref) {
-  return <th {...props} ref={ref} scope={scope} className={cx("ds-table-head", `ds-table-align-${align}`, className)} aria-sort={onSort ? sortDirection : props["aria-sort"]}>{onSort ? <button className="ds-table-sort" type="button" onClick={onSort}>{children}<img src="/design-system/table-sort.svg" width={16} height={16} alt="" /></button> : children}</th>;
+  return <th {...props} ref={ref} scope={scope} className={cx("ds-table-head", `ds-table-align-${align}`, className)} aria-sort={onSort ? sortDirection : props["aria-sort"]}>{onSort ? <Button className="ds-table-sort" variant="ghost" size="mini" onClick={onSort} endIcon={<img src="/design-system/table-sort.svg" width={16} height={16} alt="" />}>{children}</Button> : children}</th>;
 });
 export const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCellElement> & { align?: "left" | "right"; description?: ReactNode }>(function TableCell({ className, align = "left", description, children, ...props }, ref) { return <td {...props} ref={ref} className={cx("ds-table-cell", `ds-table-align-${align}`, !!description && "ds-table-cell--two-lines", className)}>{children}{description && <div className="ds-table-cell-description">{description}</div>}</td>; });
 export const TableCaption = forwardRef<HTMLTableCaptionElement, HTMLAttributes<HTMLTableCaptionElement>>(function TableCaption({ className, ...props }, ref) { return <caption {...props} ref={ref} className={cx("ds-table-caption", className)} />; });
@@ -258,7 +260,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio({ i
 export type SwitchProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size">;
 export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch({ className, ...props }, ref) {
   const field = useContext(FieldContext);
-  return <span className="ds-switch-shell"><input {...props} ref={ref} type="checkbox" role="switch" id={props.id ?? field?.id} required={props.required ?? field?.required} aria-describedby={cx(props["aria-describedby"], field?.describedBy) || undefined} className={cx("ds-choice-input", className)} /><img className="ds-choice-off" src="/design-system/switch-off.svg" width={37} height={22} alt="" /><img className="ds-choice-on" src="/design-system/switch-on.svg" width={37} height={22} alt="" /></span>;
+  return <span className="ds-switch-shell"><input {...props} ref={ref} type="checkbox" role="switch" id={props.id ?? field?.id} required={props.required ?? field?.required} aria-describedby={cx(props["aria-describedby"], field?.describedBy) || undefined} className={cx("ds-choice-input", className)} /><span className="ds-switch-track" aria-hidden="true"><span className="ds-switch-thumb" /></span></span>;
 });
 export type SliderProps = ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & { label: string; thumbLabels?: string[] };
 export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider({ label, thumbLabels, className, value, defaultValue = [50], ...props }, ref) {
@@ -285,8 +287,8 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(function Toggle
   const [localPressed, setLocalPressed] = useState(defaultPressed); const active = pressed ?? localPressed;
   return <Button {...props} ref={ref} variant={variant} className={cx("ds-toggle", className)} aria-pressed={active} onClick={event => { onClick?.(event); if (!event.defaultPrevented) { setLocalPressed(!active); onPressedChange?.(!active); } }} />;
 });
-export const LinkButton = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement> & IconSlots & { size?: ControlSize; roundness?: "default" | "round"; disabled?: boolean }>(function LinkButton({ size = "regular", roundness = "default", disabled, startIcon, endIcon, className, children, href, onClick, ...props }, ref) {
-  return <a {...props} ref={ref} href={disabled ? undefined : href} role={disabled ? "link" : props.role} aria-disabled={disabled || undefined} tabIndex={disabled ? -1 : props.tabIndex} className={cx("ds-button", "ds-link-button", `ds-control--${controlSize(size)}`, roundness === "round" && "ds-round", className)} onClick={event => { if (disabled) event.preventDefault(); else onClick?.(event); }}><IconSlot size={controlSize(size) === "mini" ? 12 : 16}>{startIcon}</IconSlot>{children}<IconSlot size={controlSize(size) === "mini" ? 12 : 16}>{endIcon}</IconSlot></a>;
+export const LinkButton = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement> & IconSlots & { size?: ControlSize; roundness?: "default" | "round"; disabled?: boolean; variant?: ButtonVariant }>(function LinkButton({ variant = "ghost", size = "regular", roundness = "default", disabled, startIcon, endIcon, className, children, href, onClick, ...props }, ref) {
+  return <a {...props} ref={ref} href={disabled ? undefined : href} role={disabled ? "link" : props.role} aria-disabled={disabled || undefined} tabIndex={disabled ? -1 : props.tabIndex} className={cx("ds-button", "ds-link-button", `ds-button--${variant === "danger" ? "destructive" : variant}`, `ds-control--${controlSize(size)}`, roundness === "round" && "ds-round", className)} onClick={event => { if (disabled) event.preventDefault(); else onClick?.(event); }}><IconSlot size={controlSize(size) === "mini" ? 12 : 16}>{startIcon}</IconSlot>{children}<IconSlot size={controlSize(size) === "mini" ? 12 : 16}>{endIcon}</IconSlot></a>;
 });
 
 
@@ -313,7 +315,6 @@ export function Popover({ trigger, children, label, align = "start", side = "bot
   const { anchorRef, theme } = useOverlayTheme();
   return <PopoverPrimitive.Root {...props}><span ref={anchorRef} className="ds-overlay-anchor"><PopoverPrimitive.Trigger asChild>{trigger}</PopoverPrimitive.Trigger></span><PopoverPrimitive.Portal><PopoverPrimitive.Content style={dialogLayer ? { zIndex: 1301 + dialogLayer * 100, pointerEvents: "auto" } : undefined} onOpenAutoFocus={onOpenAutoFocus} id={contentId} aria-label={label} align={align} side={side} sideOffset={8} collisionPadding={12} className={cx("ds-root ds-popover", className)} data-theme={theme}>{children}</PopoverPrimitive.Content></PopoverPrimitive.Portal></PopoverPrimitive.Root>;
 }
-const DialogLayerContext = createContext(0);
 export type DialogProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Root> & { trigger: ReactElement; title: string; description?: string; children: ReactNode; footer?: ReactNode; className?: string; size?: "regular" | "wide"; scroll?: "dialog" | "body" };
 export function Dialog({ trigger, title, description, children, footer, className, size = "regular", scroll = "dialog", ...props }: DialogProps) {
   const dialogLayer = useContext(DialogLayerContext);
@@ -386,7 +387,7 @@ export function MultiSelect({ value, defaultValue = [], onValueChange, ...props 
   return <SearchableSelection {...props} multiple selected={current} onSelect={next => { const result = current.includes(next) ? current.filter(item => item !== next) : [...current, next]; if (value === undefined) setInternal(result); onValueChange?.(result); }} />;
 }
 function CalendarNavigationButton({ children, className, disabled, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  return <Button {...props} size="small" variant="ghost" className={cx("ds-calendar-nav-button", className)} disabled={disabled || props["aria-disabled"] === true || props["aria-disabled"] === "true"}>{children}</Button>;
+  return <Button {...props} size="small" variant="outline" className={cx("ds-calendar-nav-button", className)} disabled={disabled || props["aria-disabled"] === true || props["aria-disabled"] === "true"}>{children}</Button>;
 }
 function CalendarDayButton(props: ComponentPropsWithoutRef<typeof DayButton>) { return <DayButton {...props} disabled={props.disabled || props.modifiers.outside} />; }
 function isCalendarDate(value: Date | DateRange | undefined): value is Date { return Object.prototype.toString.call(value) === "[object Date]" && !Number.isNaN((value as Date).getTime()); }

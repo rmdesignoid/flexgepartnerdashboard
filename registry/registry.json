@@ -164,6 +164,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -343,6 +348,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -522,6 +532,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -701,6 +716,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -880,6 +900,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -1064,6 +1089,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -1243,6 +1273,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -1422,6 +1457,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -1601,6 +1641,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -1780,6 +1825,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -1959,6 +2009,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -2138,6 +2193,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [
@@ -2337,6 +2397,11 @@
           "path": "src/design-system/palettes.ts",
           "type": "registry:file",
           "target": "@ui/palettes.ts"
+        },
+        {
+          "path": "src/design-system/motion.css",
+          "type": "registry:style",
+          "target": "@ui/motion.css"
         }
       ],
       "dependencies": [

@@ -46,8 +46,8 @@
   line-height: var(--conversation-leading); font-weight: 500; letter-spacing: 0;
 }
 :is(.ai-teacher, .ai-test-page) .ds-button--sm { min-height: 32px; padding: 5px 10px; }
-:is(.ai-teacher, .ai-test-page) .ds-button--secondary { border-color: var(--ai-line); box-shadow: var(--ds-shadow-sm); color: var(--ai-text); background: var(--ai-surface); }
-:is(.ai-teacher, .ai-test-page) .ds-button--secondary:hover { background: var(--ai-soft); }
+:is(.ai-teacher, .ai-test-page) .ds-button--outline { border-color: var(--ai-line); box-shadow: var(--ds-shadow-sm); color: var(--ai-text); background: var(--ai-surface); }
+:is(.ai-teacher, .ai-test-page) .ds-button--outline:hover { background: var(--ai-soft); }
 :is(.ai-teacher, .ai-test-page) .ds-button > svg { width: 16px; height: 16px; flex-shrink: 0; stroke-width: 1.75; }
 .ai-teacher .ai-delete-action { width: 36px; padding: 8px; }
 .ai-teacher .ai-delete-action:hover { background: color-mix(in srgb, var(--ds-danger) 8%, var(--ai-surface)); }
@@ -60,9 +60,7 @@
 :is(.ai-teacher, .ai-test-page) .ds-field { gap: 8px; }
 :is(.ai-teacher, .ai-test-page) .ds-field__label { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
 :is(.ai-teacher, .ai-test-page) :is(.ds-field__hint, .ds-field__error) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); }
-:is(.ai-teacher, .ai-test-page) :is(button, a, input, textarea, select):focus-visible { outline: 0; outline-offset: 0; box-shadow: var(--ds-focus-ring); }
-:is(.ai-teacher, .ai-test-page) :is(input, textarea, select):focus-visible { border-color: var(--ds-primary); }
-:is(.ai-teacher, .ai-test-page) :is(input, textarea, select)[aria-invalid="true"]:focus-visible { border-color: var(--ds-danger); box-shadow: var(--ds-error-ring); }
+:is(.ai-teacher, .ai-test-page) :is(button, a, input, textarea, select):focus-visible { outline: 2px solid var(--ai-primary); outline-offset: 2px; box-shadow: none; }
 
 /* Tables: clear primary content, consistent metadata, restrained badges. */
 .ai-teacher :is(.ai-practice-table__header, .ai-student-table__header) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; background: var(--ai-soft); }

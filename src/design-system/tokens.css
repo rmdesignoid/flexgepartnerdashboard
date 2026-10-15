@@ -1,6 +1,19 @@
 @import "./palette.css";
 
+/* Shared timing and easing for component interactions. */
 :root {
+  --ds-motion-fast: 120ms;
+  --ds-motion-enter: 160ms;
+  --ds-motion-exit: 120ms;
+  --ds-motion-dialog-enter: 200ms;
+  --ds-motion-dialog-exit: 150ms;
+  --ds-motion-layout: 200ms;
+  --ds-motion-loading: 1600ms;
+  --ds-motion-ease: cubic-bezier(.2, 0, .38, .9);
+  --ds-motion-ease-enter: cubic-bezier(0, 0, .38, .9);
+  --ds-motion-ease-exit: cubic-bezier(.2, 0, 1, .9);
+  --ds-motion-distance: 4px;
+  --ds-motion-scale: .98;
   --ds-background: var(--ds-color-gray-50);
   --ds-surface: var(--ds-color-white);
   --ds-surface-soft: var(--ds-color-gray-50);
@@ -12,6 +25,9 @@
   --ds-muted: var(--ds-color-gray-500);
   --ds-primary: var(--ds-color-flexge-blue-600);
   --ds-primary-hover: #214f78;
+  --ds-primary-active: color-mix(in srgb, var(--ds-primary-hover) 85%, black);
+  --ds-accent-active: color-mix(in srgb, var(--ds-accent-hover) 85%, black);
+  --ds-danger-active: color-mix(in srgb, var(--ds-danger-hover) 85%, black);
   --ds-primary-soft: #eaf4fc;
   --ds-menu-highlight: var(--ds-color-flexge-blue-100);
   --ds-menu-selected: var(--ds-color-flexge-blue-200);

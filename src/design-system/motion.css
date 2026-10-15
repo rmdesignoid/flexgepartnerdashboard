@@ -1,0 +1,64 @@
+/* Shared motion. Overlays remain mounted through their Radix exit animation. */
+:is(.ds-button,.ds-input,.ds-tab,.ds-toggle-group-item,.ds-checkbox,.ds-radio-shell,.ds-switch-shell,.ds-select-option,.ds-menu-item,.ds-table-row,.ds-calendar-nav-button,.ds-calendar .rdp-day_button,.ds-sidebar .nav-item,.ds-sidebar .nav-group__title,.ds-toast-action,.ds-input-action,.ds-table-sort,.ds-calendar-presets button) {
+  transition-property: background-color, color, border-color, box-shadow, opacity;
+  transition-duration: var(--ds-motion-fast);
+  transition-timing-function: var(--ds-motion-ease);
+}
+
+:is(.ds-popover,.ds-menu,.ds-select-menu) {
+  --ds-motion-x: 0px;
+  --ds-motion-y: 0px;
+  transform-origin: var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,var(--radix-context-menu-content-transform-origin,var(--radix-select-content-transform-origin,center))));
+}
+:is(.ds-popover,.ds-menu,.ds-select-menu)[data-side="bottom"] { --ds-motion-y: calc(-1 * var(--ds-motion-distance)); }
+:is(.ds-popover,.ds-menu,.ds-select-menu)[data-side="top"] { --ds-motion-y: var(--ds-motion-distance); }
+:is(.ds-popover,.ds-menu,.ds-select-menu)[data-side="right"] { --ds-motion-x: calc(-1 * var(--ds-motion-distance)); }
+:is(.ds-popover,.ds-menu,.ds-select-menu)[data-side="left"] { --ds-motion-x: var(--ds-motion-distance); }
+:is(.ds-popover,.ds-menu,.ds-select-menu)[data-state="open"] { animation: ds-surface-in var(--ds-motion-enter) var(--ds-motion-ease-enter) both; }
+:is(.ds-popover,.ds-menu,.ds-select-menu)[data-state="closed"] { animation: ds-surface-out var(--ds-motion-exit) var(--ds-motion-ease-exit) both; pointer-events:none; }
+@keyframes ds-surface-in {
+  from { opacity:0;transform:translate(var(--ds-motion-x),var(--ds-motion-y)) scale(var(--ds-motion-scale)); }
+  to { opacity:1;transform:translate(0,0) scale(1); }
+}
+@keyframes ds-surface-out {
+  from { opacity:1;transform:translate(0,0) scale(1); }
+  to { opacity:0;transform:translate(var(--ds-motion-x),var(--ds-motion-y)) scale(var(--ds-motion-scale)); }
+}
+.ds-dialog[data-state="open"] { animation:ds-dialog-in var(--ds-motion-dialog-enter) var(--ds-motion-ease-enter) both; }
+.ds-dialog[data-state="closed"] { animation:ds-dialog-out var(--ds-motion-dialog-exit) var(--ds-motion-ease-exit) both;pointer-events:none; }
+.ds-dialog-overlay[data-state="open"] { animation:ds-fade-in var(--ds-motion-dialog-enter) var(--ds-motion-ease-enter) both; }
+.ds-dialog-overlay[data-state="closed"] { animation:ds-fade-out var(--ds-motion-dialog-exit) var(--ds-motion-ease-exit) both; }
+@keyframes ds-dialog-in { from { opacity:0;transform:translate(-50%,-50%) scale(var(--ds-motion-scale)); } to { opacity:1;transform:translate(-50%,-50%) scale(1); } }
+@keyframes ds-dialog-out { from { opacity:1;transform:translate(-50%,-50%) scale(1); } to { opacity:0;transform:translate(-50%,-50%) scale(var(--ds-motion-scale)); } }
+@keyframes ds-fade-in { from { opacity:0; } to { opacity:1; } }
+@keyframes ds-fade-out { from { opacity:1; } to { opacity:0; } }
+
+.ds-switch-track { position:absolute;inset:0;border-radius:9999px;background:var(--ds-placeholder);box-shadow:0 1px 2px rgb(0 0 0 / .05);transition:background-color var(--ds-motion-enter) var(--ds-motion-ease);pointer-events:none; }
+.ds-switch-thumb { position:absolute;top:1px;left:1px;width:16px;height:16px;border-radius:50%;background:var(--ds-color-white);transition:transform var(--ds-motion-enter) var(--ds-motion-ease); }
+.ds-switch-shell .ds-choice-input:checked ~ .ds-switch-track { background:var(--ds-primary); }
+.ds-switch-shell .ds-choice-input:checked ~ .ds-switch-track .ds-switch-thumb { transform:translateX(15px); }
+.ds-radio-shell :is(.ds-choice-on,.ds-choice-off) { display:block;transition:opacity var(--ds-motion-fast) var(--ds-motion-ease); }
+.ds-radio-shell .ds-choice-on { opacity:0; }
+.ds-radio-shell .ds-choice-input:checked ~ .ds-choice-off { display:block;opacity:0; }
+.ds-radio-shell .ds-choice-input:checked ~ .ds-choice-on { opacity:1; }
+.ds-checkbox-indicator[data-state="checked"],.ds-checkbox-indicator[data-state="indeterminate"] { animation:ds-fade-in var(--ds-motion-fast) var(--ds-motion-ease-enter); }
+.ds-progress-value { transition:width var(--ds-motion-layout) var(--ds-motion-ease); }
+.ds-progress.is-indeterminate .ds-progress-value { transition:none; }
+.ds-slider-thumb { transition:box-shadow var(--ds-motion-fast) var(--ds-motion-ease),background-color var(--ds-motion-fast) var(--ds-motion-ease); }
+.ds-slider-thumb:hover:not([data-disabled]),.ds-slider-thumb:active:not([data-disabled]) { box-shadow:0 0 0 3px var(--ds-primary-soft); }
+.ds-slider-thumb:focus-visible { box-shadow:var(--ds-focus-ring); }
+.ds-skeleton { animation:ds-loading-pulse var(--ds-motion-loading) ease-in-out infinite; }
+@keyframes ds-loading-pulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
+
+.ds-sidebar { transition:width var(--ds-motion-layout) var(--ds-motion-ease); }
+.ds-sidebar .nav-group__items { display:grid;grid-template-rows:1fr;visibility:visible;transition:grid-template-rows var(--ds-motion-layout) var(--ds-motion-ease),margin-bottom var(--ds-motion-layout) var(--ds-motion-ease),visibility 0s; }
+.ds-sidebar .nav-group__items-inner { min-height:0;overflow:hidden; }
+.ds-sidebar:not(.is-collapsed) .nav-group__items:not(.is-collapsed) { margin-bottom:20px; }
+.ds-sidebar:not(.is-collapsed) .nav-group__items.is-collapsed { grid-template-rows:0fr;visibility:hidden;margin-bottom:0;transition:grid-template-rows var(--ds-motion-layout) var(--ds-motion-ease),margin-bottom var(--ds-motion-layout) var(--ds-motion-ease),visibility 0s var(--ds-motion-layout); }
+.ds-sidebar .nav-group__title .ds-sidebar-group-chevron { transition:transform var(--ds-motion-layout) var(--ds-motion-ease); }
+
+/* Covers portal surfaces and native controls, without changing focus semantics. */
+@media (prefers-reduced-motion:reduce) {
+  :is(.ds-popover,.ds-menu,.ds-select-menu,.ds-dialog,.ds-dialog-overlay,.ds-skeleton,.ds-checkbox-indicator,.ds-spinner,.ds-core-spinner,.ds-toast-loader,.ds-filter-spinner,.ds-progress-value) { animation:none !important; }
+  :is(.ds-button,.ds-input,.ds-tab,.ds-toggle-group-item,.ds-checkbox,.ds-radio-shell,.ds-radio-shell img,.ds-switch-shell,.ds-switch-track,.ds-switch-thumb,.ds-select-option,.ds-menu-item,.ds-table-row,.ds-calendar-nav-button,.ds-calendar .rdp-day_button,.ds-sidebar,.ds-sidebar .nav-item,.ds-sidebar .nav-group__title,.ds-sidebar .nav-group__items,.ds-sidebar-group-chevron,.ds-slider-thumb,.ds-progress-value,.ds-toast-action,.ds-input-action,.ds-table-sort,.ds-calendar-presets button,.ds-sonner-host [data-sonner-toast]) { transition:none !important; }
+}

@@ -14,6 +14,14 @@ runInContext(ts.transpileModule(source, { compilerOptions: { jsx: ts.JsxEmit.Rea
 const api = context.exports;
 const render = (component, props, children) => renderToStaticMarkup(React.createElement(component, props, children));
 
+test('core registry consumers receive every imported stylesheet, including motion', () => {
+  const registry = JSON.parse(readFileSync(new URL('../registry/registry.json', import.meta.url), 'utf8'));
+  const importedStyles = [...source.matchAll(/import "\.\/(.+\.css)"/g)].map(match => `src/design-system/${match[1]}`);
+  for (const item of registry.items.filter(item => item.files.some(file => file.path === 'src/design-system/index.tsx'))) {
+    for (const path of importedStyles) assert.ok(item.files.some(file => file.path === path), `${item.name} is missing ${path}`);
+  }
+});
+
 test('anchor tabs preserve real links and current-location semantics without hiding sections', () => {
   const html = render(api.Tabs, { label: 'Color sections', value: 'brand', onChange() {}, items: [{ value: 'semantic', label: 'Semantic', href: '#semantic-colors' }, { value: 'brand', label: 'Brand', href: '#brand-palettes' }, { value: 'disabled', label: 'Disabled', href: '#disabled', disabled: true }] });
   assert.match(html, /<nav[^>]*aria-label="Color sections"/);
@@ -33,9 +41,9 @@ test('sidebar groups have unique disclosure targets and current-page semantics',
   assert.match(html, /<a[^>]*href="\/students"/);
   const hidden = render(api.SidebarNavigation, { ...props, collapsedGroups: new Set(['Classes']) });
   assert.match(hidden, /aria-expanded="false"/);
-  assert.match(hidden, /<div[^>]*hidden=""/);
+  assert.match(hidden, /<div[^>]*aria-hidden="true" inert=""/);
   const rail = render(api.SidebarNavigation, { ...props, collapsed: true, collapsedGroups: new Set(['Classes']) });
-  assert.doesNotMatch(rail, /hidden=""/);
+  assert.doesNotMatch(rail, /inert=""|aria-hidden="true" inert/);
   assert.match(rail, /title="Planner"/);
 });
 
@@ -164,7 +172,7 @@ test('button loading replaces only its start icon and keeps the action label', (
 test('input icon action is labelled, non-submit and disabled with the field', () => {
   const html = render(api.Input, { disabled: true, startIcon: React.createElement('svg'), endIcon: React.createElement('svg'), endAction: { label: 'Clear name', icon: React.createElement('svg'), onClick() {} } });
   assert.match(html, /has-leading has-trailing has-action/);
-  assert.match(html, /<button[^>]*type="button"[^>]*aria-label="Clear name"[^>]*disabled=""/);
+  assert.match(html, /<button(?=[^>]*type="button")(?=[^>]*aria-label="Clear name")(?=[^>]*disabled="")[^>]*>/);
   assert.doesNotMatch(html, /endAction=|startIcon=|endIcon=/);
 });
 test('explicit null icons remove decorations while legacy leading and trailing remain supported', () => {
@@ -282,4 +290,12 @@ test('filter select inherits required and error associations from a field', () =
   assert.match(html, /aria-invalid="true"/);
   assert.match(html, /aria-required="true"/);
   assert.match(html, /Select an Option/);
+});
+
+test('link button variants preserve real navigation and hide internal styling props', () => {
+  const html = render(api.LinkButton, { href: '/design-system', variant: 'outline', size: 'mini', target: '_blank', rel: 'noreferrer' }, 'Reference');
+  assert.match(html, /href="\/design-system"/);
+  assert.match(html, /target="_blank"/);
+  assert.match(html, /ds-button--outline/);
+  assert.doesNotMatch(html, /variant="|size="/);
 });
