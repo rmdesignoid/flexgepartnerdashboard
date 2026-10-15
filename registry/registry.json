@@ -1623,7 +1623,7 @@
       "name": "extended-story",
       "type": "registry:block",
       "title": "Flexge Extended Core",
-      "description": "Accessible overlays, menus, searchable selections, date pickers, toggle groups and breadcrumbs.",
+      "description": "Accessible overlays including wide dialogs with a scrollable body, menus, searchable selections, date pickers, toggle groups and breadcrumbs.",
       "categories": [
         "flexge",
         "storybook",

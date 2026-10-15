@@ -114,6 +114,11 @@ em alterações próprias e revisadas visualmente.
 
 ## Convenções
 
+`Dialog` aceita `size="wide"` para revisão de conteúdo extenso e `scroll="body"`
+para manter título e ações visíveis enquanto apenas o corpo rola. Preserve o
+comportamento de foco, Escape e retorno ao acionador fornecido pelo componente.
+As stories `WideScrollableDialog` e `WideScrollableDialogDark` demonstram o uso.
+
 - Use tokens semânticos (`--ds-*`) em vez de cores ou espaçamentos locais.
 - Badges são sempre totalmente arredondados com `--ds-radius-full`.
 - Campos devem cobrir os estados default, hover, focus, filled, disabled e invalid.

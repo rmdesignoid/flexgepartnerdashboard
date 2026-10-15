@@ -94,11 +94,11 @@ export const coreCatalog: CatalogEntry[] = [
 
   "variants": "controlled \u00b7 uncontrolled / title \u00b7 description \u00b7 body \u00b7 footer",
 
-  "props": "trigger, title, description, children, footer, open, onOpenChange / DialogClose",
+  "props": "trigger, title, description, children, footer, open, onOpenChange, size (regular | wide), scroll (dialog | body) / DialogClose",
 
   "example": "<Dialog title=\"Edit name\" trigger={<Button>Edit</Button>}><FormField label=\"Name\"><Input /></FormField></Dialog>",
 
-  "guidance": "Focus is trapped while open and restored when closed. Compose DialogClose asChild with a Button. Use AlertDialog for confirmations.",
+  "guidance": "Focus is trapped while open and restored when closed. Compose DialogClose asChild with a Button. Use size=wide for extensive reviews and scroll=body to keep the title and footer available. Use AlertDialog for confirmations.",
 
   "figmaNode": ""
 

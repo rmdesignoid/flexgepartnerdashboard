@@ -88,6 +88,7 @@ import type { LessonPlan } from "../src/features/lesson-plans/data";
 import { LessonPlansView } from "../src/features/lesson-plans/LessonPlansView";
 import { TeacherHoursView } from "../src/features/teacher-hours/TeacherHoursView";
 import { AIConversationView } from "../src/features/ai-conversation/AIConversationView";
+import { AbilitiesTestsView } from "../src/features/abilities-tests/AbilitiesTestsView";
 import { StudentOralProductionHistory } from "../src/features/ai-conversation/StudentOralProductionHistory";
 
 type PlannerEvent = {
@@ -138,7 +139,7 @@ type CalendarFilters = {
   planningStatus: string[];
 };
 type CalendarToast = { message: string; detail?: string; tone?: "success" | "error" | "info"; action?: { label: string; onClick: () => void } };
-type ModuleView = "lessonPlans" | "planner" | "plannerFullEnglish" | "classReporting" | "teacherHours" | "resources" | "resourcesV2" | "students" | "studentApp" | "aiConversation";
+type ModuleView = "lessonPlans" | "planner" | "plannerFullEnglish" | "classReporting" | "teacherHours" | "resources" | "resourcesV2" | "students" | "studentApp" | "aiConversation" | "abilities";
 type ResourceRecord = {
   title: string;
   level: string;
@@ -2618,6 +2619,15 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [activeModule, setActiveModule] = useState<ModuleView>("planner");
+  useEffect(() => {
+    const sync = () => {
+      if (new URLSearchParams(window.location.search).get("module") === "abilities") setActiveModule("abilities");
+      else setActiveModule(current => current === "abilities" ? "planner" : current);
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
   const [profileStudent, setProfileStudent] = useState<{ name: string; email: string } | null>(null);
   const isFullEnglishPlanner = activeModule === "plannerFullEnglish";
   const [isSchedulingEvent, setIsSchedulingEvent] = useState(false);
@@ -3017,7 +3027,7 @@ export default function Home() {
   return (
     <>
       <DesktopOnly />
-      <main className={`planner-shell ${sidebarCollapsed ? "is-sidebar-collapsed" : ""} ${activeModule === "aiConversation" ? "is-ai-studio" : ""} ${planningSelection && planningSelection.source !== "report" ? "is-planning" : ""} ${darkMode ? "theme-dark" : ""}`}>
+      <main className={`planner-shell ${sidebarCollapsed ? "is-sidebar-collapsed" : ""} ${activeModule === "aiConversation" ? "is-ai-studio" : ""} ${activeModule === "abilities" ? "is-abilities" : ""} ${planningSelection && planningSelection.source !== "report" ? "is-planning" : ""} ${darkMode ? "theme-dark" : ""}`}>
         <Sidebar collapsed={sidebarCollapsed}>
           <SidebarMain>
             <div className="brand-row">
@@ -3040,15 +3050,23 @@ export default function Home() {
               collapsed={sidebarCollapsed}
               collapsedGroups={collapsedNavGroups}
               onGroupToggle={toggleNavGroup}
-              activeId={({ lessonPlans: "My Lesson Plans", planner: "Planner", plannerFullEnglish: "Planner FullEnglish", classReporting: "Lesson Log", teacherHours: "Teacher Hours", resources: "My Resources", resourcesV2: "My Resources v2", students: "Students", studentApp: "Student App", aiConversation: "AI Studio" } as Record<string, string>)[activeModule]}
+              activeId={({ lessonPlans: "My Lesson Plans", planner: "Planner", plannerFullEnglish: "Planner FullEnglish", classReporting: "Lesson Log", teacherHours: "Teacher Hours", resources: "My Resources", resourcesV2: "My Resources v2", students: "Students", studentApp: "Student App", aiConversation: "AI Studio", abilities: "4 Abilities Tests" } as Record<string, string>)[activeModule]}
               groups={navGroups.map(group => ({ label: group.label, items: group.items.map(([label, Icon]) => ({ id: label, label, icon: <Icon size={18} strokeWidth={1.7} aria-hidden="true" /> })) }))}
               onItemSelect={label => {
+                            if (label !== "4 Abilities Tests" && activeModule === "abilities") window.history.pushState({}, "", "/");
+                            if (label === "4 Abilities Tests") {
+                              setActiveModule("abilities");
+                              setSelectedEvent(null);
+                              setPlanningSelection(null);
+                              window.history.pushState({}, "", "/?module=abilities");
+                              window.dispatchEvent(new PopStateEvent("popstate"));
+                            }
                             if (label === "My Lesson Plans") {
                               setActiveModule("lessonPlans");
                               setSelectedEvent(null);
                               setPlanningSelection(null);
                             }
-                            if (label !== "Students" && activeModule === "students") {
+                            if (label !== "Students" && label !== "4 Abilities Tests" && activeModule === "students") {
                               setProfileStudent(null);
                               window.history.replaceState({}, "", "/");
                             }
@@ -3139,7 +3157,7 @@ export default function Home() {
               onNavigateReport={(item) => setPlanningSelection({ event: item, date: reportingDate(item), source: "report" })}
               onBack={() => setPlanningSelection(null)}
             />
-          ) : activeModule === "lessonPlans" ? <LessonPlansView darkMode={darkMode} classes={planningClasses} applications={planApplications} onApply={applyLessonPlan} onOpenClass={id => {
+          ) : activeModule === "abilities" ? <AbilitiesTestsView darkMode={darkMode} /> : activeModule === "lessonPlans" ? <LessonPlansView darkMode={darkMode} classes={planningClasses} applications={planApplications} onApply={applyLessonPlan} onOpenClass={id => {
             const event = events.find(item => String(item.id) === id);
             if (event) { setActiveModule("planner"); setPlanningSelection({ event, date: reportingDate(event) }); setSelectedEvent(null); }
           }} /> : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView profileStudent={profileStudent} onOpenProfile={openStudentProfile} onReturn={returnToStudents} /> : activeModule === "studentApp" ? <StudentAppView /> : <>
