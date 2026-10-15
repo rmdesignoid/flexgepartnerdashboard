@@ -1,4 +1,7 @@
 "use client";
+import { CalendarFilterPopover, emptyCalendarFilters } from "../src/features/planner/CalendarFilterPopover";
+import { matchesCalendarFilters, optionsFromClasses, type CalendarFilters } from "../src/features/planner/filter-model";
+import { ClassStatusIndicator, PlanningStatusIndicator, PlanningStatusBadge, classStatusConfig } from "../src/features/planner/status";
 
 import { Sidebar, SidebarMain, SidebarFooter, SidebarNavigation } from "../src/design-system";
 
@@ -12,6 +15,10 @@ import {
   BookOpenCheck,
   BookOpenText,
   Calendar1,
+  CalendarFold,
+  Repeat,
+  ArrowUpDown,
+  FileDown,
   
   CalendarDays,
   CalendarClock,
@@ -30,7 +37,6 @@ import {
   Maximize2,
   FileBadge2,
   FileText,
-  Filter,
   ListFilter,
   Flag,
   Folder,
@@ -83,12 +89,14 @@ import type { FormEvent, KeyboardEvent, MouseEvent, PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import * as Popover from "@radix-ui/react-popover";
+import { exportLessonLog } from "../src/features/lesson-logs/exportLessonLog";
+import { LessonLogDetailsDialog } from "../src/features/lesson-logs/LessonLogDetailsDialog";
+import { LessonLogPeriod, periodDates } from "../src/features/lesson-logs/LessonLogPeriod";
 import { applicationStorageKey, readApplications, reviewApplications, snapshotForPlan, type Application, type ApplicationRequest, type PlanSnapshot, type PlannerClass } from "../src/features/lesson-plans/bulk-planning";
 import type { LessonPlan } from "../src/features/lesson-plans/data";
 import { LessonPlansView } from "../src/features/lesson-plans/LessonPlansView";
 import { TeacherHoursView } from "../src/features/teacher-hours/TeacherHoursView";
 import { AIConversationView } from "../src/features/ai-conversation/AIConversationView";
-import { StudentOralProductionHistory } from "../src/features/ai-conversation/StudentOralProductionHistory";
 
 type PlannerEvent = {
   id: string | number;
@@ -107,7 +115,6 @@ type PlannerEvent = {
   observation?: string;
   classPlanId?: string;
   appliedPlan?: PlanSnapshot;
-  baseVersion?: string;
   scheduledDate?: string;
   studentEmails?: string[];
   teacherNames?: string[];
@@ -130,13 +137,7 @@ type ClassPlanLoadState = "loading" | "success" | "empty" | "error";
 
 type EventStatus = "To Plan" | "Planning" | "Planned" | "Taught";
 type ClassStatus = "Scheduled" | "Reschedule pending" | "Rescheduled" | "Student no-show" | "Canceled";
-type CalendarFilters = {
-  group: string[];
-  teacher: string[];
-  student: string[];
-  classStatus: string[];
-  planningStatus: string[];
-};
+
 type CalendarToast = { message: string; detail?: string; tone?: "success" | "error" | "info"; action?: { label: string; onClick: () => void } };
 type ModuleView = "lessonPlans" | "planner" | "plannerFullEnglish" | "classReporting" | "teacherHours" | "resources" | "resourcesV2" | "students" | "studentApp" | "aiConversation";
 type ResourceRecord = {
@@ -161,8 +162,6 @@ type StudentRecord = {
   weeklyGoal: string;
   lastSeen: string;
   attendance: ("present" | "absent")[];
-  oralProductionReports?: number;
-  lastOralProductionActivity?: string;
 };
 
 type GrammarPerformance = {
@@ -302,49 +301,9 @@ function statusSlug(status: EventStatus) {
   return status.toLowerCase().replace(/\s+/g, "-");
 }
 
-const classStatusConfig: Record<ClassStatus, { Icon: typeof CalendarDays; tone: string }> = {
-  Scheduled: { Icon: Calendar1, tone: "scheduled" },
-  "Reschedule pending": { Icon: CalendarClock, tone: "reschedule-pending" },
-  Rescheduled: { Icon: CalendarSync, tone: "rescheduled" },
-  "Student no-show": { Icon: UserRoundX, tone: "student-no-show" },
-  Canceled: { Icon: CalendarX2, tone: "canceled" },
-};
-
-function ClassStatusIndicator({ status, showLabel = false }: { status?: ClassStatus; showLabel?: boolean }) {
-  if (!status) return null;
-  const { Icon, tone } = classStatusConfig[status];
-  const label = status === "Student no-show" ? "No-show" : status;
-  return (
-    <span className={`class-status class-status--${tone}`} title={label} aria-label={`Class status: ${label}`}>
-      <Icon size={16} strokeWidth={1.9} aria-hidden="true" />
-      {showLabel ? <span>{label}</span> : null}
-    </span>
-  );
-}
-
 function ClassStatusSelect({ status, onChange }: { status?: ClassStatus; onChange: (status: ClassStatus) => void }) {
   const current = status ?? "Scheduled";
   return <Popover.Root><Popover.Trigger asChild><button type="button" className={`class-status-select-trigger class-status--${statusSlug(current)}`} aria-label="Change class status" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}><ClassStatusIndicator status={current} showLabel /><ChevronDown size={14} aria-hidden="true" /></button></Popover.Trigger><Popover.Portal><Popover.Content className="class-status-select-menu" side="bottom" align="start" sideOffset={6} onPointerDown={(event) => event.stopPropagation()}>{(Object.keys(classStatusConfig) as ClassStatus[]).map((option) => { const Icon = classStatusConfig[option].Icon; const selected = option === current; return <button type="button" key={option} className={`class-status-select-option class-status--${statusSlug(option)}${selected ? " is-selected" : ""}`} onClick={(event) => { event.stopPropagation(); onChange(option); }}><Icon size={15} aria-hidden="true" /><span>{option === "Student no-show" ? "No-show" : option}</span>{selected ? <Check size={15} aria-hidden="true" /> : null}</button>; })}</Popover.Content></Popover.Portal></Popover.Root>;
-}
-
-function PlanningStatusIndicator({ status }: { status: EventStatus }) {
-  const { Icon } = planningStatusConfig[status];
-  return (
-    <span className={`planning-status-icon planning-status-icon--${statusSlug(status)}`} title={status} aria-label={`Planning status: ${status}`}>
-      <Icon size={16} strokeWidth={1.9} aria-hidden="true" />
-    </span>
-  );
-}
-
-const planningStatusConfig: Record<EventStatus, { Icon: typeof BookOpen }> = {
-  "To Plan": { Icon: BookOpen },
-  Planning: { Icon: BookOpenText },
-  Planned: { Icon: BookOpenCheck },
-  Taught: { Icon: BookCheck },
-};
-
-function PlanningStatusBadge({ status }: { status: EventStatus }) {
-  return <span className={`planning-status planning-status--${statusSlug(status)}`}><PlanningStatusIndicator status={status} />{status}</span>;
 }
 
 function eventDisplayName(event: PlannerEvent) {
@@ -521,13 +480,15 @@ function ReportingSelect({ value, onChange, options, ariaLabel }: { value: strin
   return <Popover.Root><Popover.Trigger asChild><button type="button" className="class-reporting-select-trigger" aria-label={ariaLabel}><span className="class-reporting-select-value"><span className="class-reporting-select-avatar" aria-hidden="true">{selected?.charAt(0)}</span><span>{selected}</span></span><ChevronDown size={15} aria-hidden="true" /></button></Popover.Trigger><Popover.Portal><Popover.Content className="class-reporting-select-menu" side="bottom" align="start" sideOffset={6} collisionPadding={8}><div role="listbox" aria-label={ariaLabel}>{options.map((option) => <button type="button" role="option" aria-selected={option.value === value} className={option.value === value ? "is-selected" : ""} key={option.value} onClick={() => onChange(option.value)}><span className="class-reporting-select-value"><span className="class-reporting-select-avatar" aria-hidden="true">{option.label?.charAt(0)}</span><span>{option.label}</span></span>{option.value === value ? <Check size={15} aria-hidden="true" /> : null}</button>)}</div></Popover.Content></Popover.Portal></Popover.Root>;
 }
 
-function ClassReportingView({ events, onOpenInPlanner }: { events: PlannerEvent[]; onOpenInPlanner: (event: PlannerEvent) => void }) {
+function ClassReportingView({ events }: { events: PlannerEvent[] }) {
   const [query, setQuery] = useState("");
   const [selectedStudentFilters, setSelectedStudentFilters] = useState<string[]>([]);
   const [selectedGroupFilters, setSelectedGroupFilters] = useState<string[]>([]);
   const [selectedGrammarFilters, setSelectedGrammarFilters] = useState<string[]>([]);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState(() => periodDates(30)[0]);
+  const [toDate, setToDate] = useState(() => periodDates(30)[1]);
+  const [periodPreset, setPeriodPreset] = useState("Last 30 days");
+  const [ascending, setAscending] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedReportEvent, setSelectedReportEvent] = useState<PlannerEvent | null>(null);
   const [isExportingLog, setIsExportingLog] = useState(false);
@@ -550,32 +511,30 @@ function ClassReportingView({ events, onOpenInPlanner }: { events: PlannerEvent[
     if (fromDate && dateKey < fromDate) return false;
     if (toDate && dateKey > toDate) return false;
     return true;
-  }).sort(compareReportingEventsDescending), [fromDate, plansByEvent, query, reportEvents, selectedGrammarFilters, selectedGroupFilters, selectedStudentFilters, toDate]);
+  }).sort((a, b) => (ascending ? -1 : 1) * compareReportingEventsDescending(a, b)), [ascending, fromDate, plansByEvent, query, reportEvents, selectedGrammarFilters, selectedGroupFilters, selectedStudentFilters, toDate]);
   const pageSize = 10;
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   useEffect(() => { setPage(1); }, [query, selectedStudentFilters, selectedGroupFilters, selectedGrammarFilters, fromDate, toDate]);
   const visibleRows = rows.slice((page - 1) * pageSize, page * pageSize);
-  const dayGroups = useMemo(() => visibleRows.reduce<Array<{ key: string; date: Date; events: PlannerEvent[] }>>((groups, event) => {
-    const key = reportingDateKey(event);
-    const previousGroup = groups.at(-1);
-    if (previousGroup?.key === key) previousGroup.events.push(event);
-    else groups.push({ key, date: reportingDate(event), events: [event] });
-    return groups;
-  }, []), [visibleRows]);
 
   function exportLog() {
-    setIsExportingLog(true);
+    const format = (key: string) => new Date(`${key}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    const ready = exportLessonLog(rows.map((event) => {
+      const lesson = lessonLogDetails(event);
+      return { date: reportingDate(event).toLocaleDateString("en-US", {month:"short",day:"numeric",year:"numeric"}), time: `${formatTime(event.startMinutes)}–${formatTime(event.startMinutes + event.duration)}`, name: eventDisplayName(event), goal: lesson.goal, grammars: lesson.grammars, summary: lesson.summary, status: event.classStatus || "Scheduled", taught: event.status === "Taught" };
+    }), fromDate && toDate ? `${format(fromDate)} – ${format(toDate)}` : "All time", `Students: ${selectedStudentFilters.join(", ") || "All"} · Groups: ${selectedGroupFilters.join(", ") || "All"} · Grammars: ${selectedGrammarFilters.join(", ") || "All"}${query ? ` · Search: ${query}` : ""}`);
+    setIsExportingLog(ready);
     window.setTimeout(() => setIsExportingLog(false), 2600);
   }
 
   const selectedPlan = selectedReportEvent ? plansByEvent.get(String(selectedReportEvent.id)) : null;
-  const selectedDate = selectedReportEvent ? reportingDate(selectedReportEvent) : null;
+  const selectedLesson = selectedReportEvent ? lessonLogDetails(selectedReportEvent) : null;
   const selectedReportIndex = selectedReportEvent ? rows.findIndex((event) => String(event.id) === String(selectedReportEvent.id)) : -1;
-  const activeFilterCount = selectedStudentFilters.length + selectedGroupFilters.length + selectedGrammarFilters.length + [fromDate, toDate].filter(Boolean).length;
+  const activeFilterCount = selectedStudentFilters.length + selectedGroupFilters.length + selectedGrammarFilters.length;
   const totalClasses = rows.length;
   const taughtClasses = rows.filter((event) => event.status === "Taught").length;
   const canceledClasses = rows.filter((event) => event.classStatus === "Canceled").length;
-  const rescheduledClasses = rows.filter((event) => event.classStatus?.toLowerCase().includes("resched")).length;
+  const rescheduledClasses = rows.filter((event) => event.classStatus === "Rescheduled").length;
   const reschedulePendingClasses = rows.filter((event) => event.classStatus === "Reschedule pending").length;
   const noShowClasses = rows.filter((event) => event.classStatus === "Student no-show").length;
   const clearFilters = () => {
@@ -584,66 +543,73 @@ function ClassReportingView({ events, onOpenInPlanner }: { events: PlannerEvent[
     setSelectedGrammarFilters([]);
     setFromDate("");
     setToDate("");
+    setPeriodPreset("All time");
   };
   return <section className="class-reporting" aria-label="Lesson Log">
-    <header className="resources-header class-reporting__header"><div className="resources-header__title-row"><div><h1>Lesson Log</h1><p>Review your class history and statuses in one place.</p></div></div><button type="button" className="outline-button" onClick={exportLog}><Download size={16} />Export log</button></header>
+    <header className="resources-header class-reporting__header"><div className="resources-header__title-row"><div><h1>Lesson Logs</h1><p>Review your class history and statuses in one place.</p></div></div></header>
     <div className="class-reporting__filters resources-toolbar" aria-label="Lesson Log filters">
+      <LessonLogPeriod from={fromDate} to={toDate} preset={periodPreset} onChange={(from, to, preset) => { setFromDate(from); setToDate(to); setPeriodPreset(preset); }} />
       <label className="resources-search class-reporting__search"><Search size={16} aria-hidden="true" /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by class or content" aria-label="Search Lesson Log" />{query ? <button className="resources-search__clear" type="button" aria-label="Clear Lesson Log search" onClick={() => setQuery("")}><X size={15} aria-hidden="true" /></button> : null}</label>
-      <span className="class-reporting__select"><ResourceFilterDropdown label="Students" allLabel="All students" options={students} value={selectedStudentFilters} onChange={setSelectedStudentFilters} wide /></span>
-      <span className="class-reporting__select"><ResourceFilterDropdown label="Groups" allLabel="All groups" options={groups} value={selectedGroupFilters} onChange={setSelectedGroupFilters} /></span>
-      <span className="class-reporting__select class-reporting__grammar-select"><ResourceFilterDropdown label="Grammars" allLabel="All grammars" options={grammars} value={selectedGrammarFilters} onChange={setSelectedGrammarFilters} wide /></span>
-      <div className="class-reporting__date-range class-reporting__date-range--toolbar" aria-label="Filter by date"><label><span>From</span><ScheduleDatePicker value={fromDate} onChange={(value) => { setFromDate(value); if (toDate && value > toDate) setToDate(""); }} label="Pick a date from" placeholder="Pick a date" maxValue={toDate || undefined} /></label><label><span>To</span><ScheduleDatePicker value={toDate} onChange={setToDate} label="Pick a date to" placeholder="Pick a date" minValue={fromDate || undefined} /></label></div>
+      <span className="class-reporting__select"><User size={16} aria-hidden="true" /><ResourceFilterDropdown label="Students" allLabel="All students" options={students} value={selectedStudentFilters} onChange={setSelectedStudentFilters} wide /></span>
+      <span className="class-reporting__select"><Users size={16} aria-hidden="true" /><ResourceFilterDropdown label="Groups" allLabel="All groups" options={groups} value={selectedGroupFilters} onChange={setSelectedGroupFilters} /></span>
+      <span className="class-reporting__select class-reporting__grammar-select"><GraduationCap size={16} aria-hidden="true" /><ResourceFilterDropdown label="Grammars" allLabel="All grammars" options={grammars} value={selectedGrammarFilters} onChange={setSelectedGrammarFilters} wide /></span>
+
       {activeFilterCount ? <button type="button" className="class-reporting__clear-filters" onClick={clearFilters}>Clear</button> : null}
+      <button type="button" className="lesson-export-button" onClick={exportLog} aria-label="Export Lesson Logs as PDF" title="Export as PDF"><FileDown size={16} /></button>
     </div>
     <div className="class-reporting__kpis" aria-label="Lesson Log overview">
-      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon"><CalendarDays size={17} aria-hidden="true" /></span><span><strong>{totalClasses}</strong><small>Total classes</small></span></div>
-      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--taught"><BookCheck size={17} aria-hidden="true" /></span><span><strong>{taughtClasses}</strong><small>Classes taught</small></span></div>
-      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--canceled"><CalendarX2 size={17} aria-hidden="true" /></span><span><strong>{canceledClasses}</strong><small>Classes canceled</small></span></div>
-      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--rescheduled"><CalendarSync size={17} aria-hidden="true" /></span><span><strong>{rescheduledClasses}</strong><small>Rescheduled</small></span></div>
-      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--reschedule-pending"><CalendarClock size={17} aria-hidden="true" /></span><span><strong>{reschedulePendingClasses}</strong><small>Reschedule pending</small></span></div>
-      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--no-show"><UserRoundX size={17} aria-hidden="true" /></span><span><strong>{noShowClasses}</strong><small>Student no-show</small></span></div>
+      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon"><CalendarFold size={16} aria-hidden="true" /></span><span><strong>{totalClasses}</strong><small>Total classes</small></span></div>
+      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--taught"><CalendarDays size={16} aria-hidden="true" /></span><span><strong>{taughtClasses}</strong><small>Classes taught</small></span></div>
+      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--canceled"><CalendarDays size={16} aria-hidden="true" /></span><span><strong>{canceledClasses}</strong><small>Classes canceled</small></span></div>
+      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--rescheduled"><Repeat size={16} aria-hidden="true" /></span><span><strong>{rescheduledClasses}</strong><small>Rescheduled</small></span></div>
+      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--reschedule-pending"><CalendarX2 size={16} aria-hidden="true" /></span><span><strong>{reschedulePendingClasses}</strong><small>Reschedule pending</small></span></div>
+      <div className="class-reporting__kpi"><span className="class-reporting__kpi-icon class-reporting__kpi-icon--no-show"><User size={16} aria-hidden="true" /></span><span><strong>{noShowClasses}</strong><small>Student no-show</small></span></div>
     </div>
     <div className="class-reporting__content">
       <div className="class-reporting__timeline">
-        <div className="class-reporting__column-labels" aria-hidden="true">
-          <span>Date</span>
+        {rows.length ? <div className="class-reporting__column-labels">
+          <button type="button" onClick={() => setAscending((value) => !value)} aria-label={`Sort by date ${ascending ? "newest" : "oldest"} first`}>Date<ArrowUpDown size={16} /></button>
           <span>Time</span>
           <span>Class</span>
           <span>Lesson Goal</span>
           <span>Grammars</span>
           <span>Lesson Summary</span>
           <span>Status</span>
-        </div>
-        {dayGroups.map(({ key, date, events: dayEvents }) => (
-          <section className="class-reporting__day" key={key}>
-            <header className="class-reporting__day-header">
-              <strong>{date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</strong>
-            </header>
-            <div className="class-reporting__day-events">
-              {dayEvents.map((event) => {
-                const eventDate = reportingDate(event);
-                const lesson = lessonLogDetails(event);
-                return <button className="class-reporting__timeline-row" type="button" key={event.id} onClick={() => onOpenInPlanner(event)} aria-label={`Open details for ${eventDisplayName(event)}`}>
-                  <span className="class-reporting__date">{eventDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                  <span className="class-reporting__time"><strong>{formatTime(event.startMinutes)}</strong><span>{formatTime(event.startMinutes + event.duration)}</span></span>
-                  <span className="class-reporting__session">
-                    <span className="class-reporting__session-heading"><ReportingEventIdentity event={event} /><strong>{eventDisplayName(event)}</strong></span>
-                  </span>
-                  <span className="class-reporting__lesson-goal" title={lesson.goal}>{lesson.goal}</span>
-                  <span className="class-reporting__grammar-topics">{lesson.grammars.length ? lesson.grammars.slice(0, 2).map((topic) => <span className="topic-badge" key={topic}>{topic}</span>) : <span className="class-reporting__empty-cell">—</span>}</span>
-                  <span className={`class-reporting__summary${lesson.summary ? "" : " is-empty"}`}>{lesson.summary || "—"}</span>
-                  {event.classStatus ? <span className="class-reporting__status-group"><ClassStatusIndicator status={event.classStatus} showLabel /></span> : null}
-                  <ChevronRight className="class-reporting__open" size={18} aria-hidden="true" />
-                </button>;
-              })}
-            </div>
-          </section>
-        ))}
-        {!rows.length ? <div className="class-reporting__empty">No classes match these filters.</div> : null}
+        </div> : null}
+        {visibleRows.map((event) => {
+          const eventDate = reportingDate(event), lesson = lessonLogDetails(event), status = event.classStatus || "Scheduled";
+          const time = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+          return <button className="class-reporting__timeline-row" type="button" key={event.id} onClick={() => setSelectedReportEvent(event)} aria-label={`Open details for ${eventDisplayName(event)}`}>
+            <span className="class-reporting__date">{eventDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+            <span className="class-reporting__time">{time(event.startMinutes)}–{time(event.startMinutes + event.duration)}</span>
+            <span className="class-reporting__session" title={eventDisplayName(event)}>{eventDisplayName(event)}</span>
+            <span className="class-reporting__lesson-goal" title={lesson.goal}>{lesson.goal}</span>
+            <span className="class-reporting__grammar-topics" title={lesson.grammars.join(", ")}>{lesson.grammars.join(", ") || "—"}</span>
+            <span className="class-reporting__summary" title={lesson.summary}>{lesson.summary || "—"}</span>
+            <span className="class-reporting__status-group"><span className={`lesson-log-status is-${status.toLowerCase().replaceAll(" ", "-")}`}>{status}</span></span>
+          </button>;
+        })}
+        {!rows.length ? <div className="class-reporting__empty"><span className="lesson-empty-icon"><Search size={20} /></span><strong>No classes in this period</strong><p>There are no classes matching the selected period and filters.<br />Try a different date range.</p></div> : null}
       </div>
-    <footer className="class-reporting__footer"><span>Showing {Math.min(page * pageSize, rows.length)} of {rows.length}</span><div className="class-reporting__pagination"><button type="button" className="pagination-button" disabled={page <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Previous</button><button type="button" className="pagination-button is-current" aria-current="page">{page}</button><button type="button" className="pagination-button" disabled={page >= pageCount} onClick={() => setPage((value) => Math.min(pageCount, value + 1))}>Next</button></div></footer></div>
-    {selectedReportEvent ? <div className="class-reporting-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedReportEvent(null); }}><section className="class-reporting-dialog" role="dialog" aria-modal="true" aria-labelledby="class-reporting-detail-title"><aside className="class-reporting-dialog__timeline" aria-label="Class history by date"><span>Class history</span><div>{rows.map((event) => { const date = reportingDate(event); const selected = String(event.id) === String(selectedReportEvent.id); return <button className={selected ? "is-active" : ""} type="button" key={event.id} onClick={() => setSelectedReportEvent(event)}><strong>{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</strong><span>{formatTime(event.startMinutes)} · {eventDisplayName(event)}</span></button>; })}</div></aside><div className="class-reporting-dialog__main"><header><div><span>Class details</span><h2 id="class-reporting-detail-title">{eventDisplayName(selectedReportEvent)}</h2><p>{selectedDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })} · {formatTime(selectedReportEvent.startMinutes)}–{formatTime(selectedReportEvent.startMinutes + selectedReportEvent.duration)}</p></div><button type="button" className="icon-button icon-button--quiet" onClick={() => setSelectedReportEvent(null)} aria-label="Close class details" autoFocus><X size={18} /></button></header><div className="class-reporting-dialog__body"><div className="class-reporting-dialog__status">{reportingStatus(selectedReportEvent) ? <span className={`class-reporting__status is-${statusSlug(selectedReportEvent.status)}`}><PlanningStatusIndicator status={selectedReportEvent.status} />{selectedReportEvent.status}</span> : <span className="class-reporting__status is-not-applicable">—</span>}{selectedReportEvent.classStatus ? <ClassStatusIndicator status={selectedReportEvent.classStatus} showLabel /> : null}</div><section><span>Lesson goal</span><p>{selectedPlan?.classGoal ?? selectedReportEvent.description ?? "No class goal recorded."}</p></section><section><span>Grammar</span>{selectedPlan?.grammarTopics.length ? <div className="topic-list">{selectedPlan.grammarTopics.map((topic) => <span className="topic-badge" key={topic}>{topic}</span>)}</div> : <p>No grammar topics recorded.</p>}</section><section><span>Lesson resources</span>{selectedPlan?.resourceTitles.length ? <ul className="class-reporting-dialog__resources">{selectedPlan.resourceTitles.map((resource) => <li key={resource}><Paperclip size={15} />{resource}</li>)}</ul> : <p>No lesson resources recorded.</p>}</section><section><span>Procedures &amp; lesson content</span><p className="class-reporting-dialog__procedures">{selectedPlan?.procedures ?? selectedReportEvent.description ?? "No lesson content recorded."}</p></section><section><span>Participants</span><p>{selectedReportEvent.studentName ?? selectedReportEvent.groupName ?? selectedReportEvent.studentEmails?.join(", ") ?? "No participant recorded"}</p></section></div><footer><span>{selectedReportIndex + 1} of {rows.length} classes</span><div><button type="button" className="outline-button" onClick={() => setSelectedReportEvent(null)}>Close</button><button type="button" className="primary-button" onClick={() => onOpenInPlanner(selectedReportEvent)}>Open in Planner<ChevronRight size={16} /></button></div></footer></div></section></div> : null}
-    {isExportingLog ? <div className="calendar-toast calendar-toast--success" role="status" aria-live="polite"><span className="calendar-toast__icon" aria-hidden="true"><Check size={16} strokeWidth={2.5} /></span><div className="calendar-toast__copy"><strong>Log is being prepared</strong><span>Your class report will be ready shortly.</span></div></div> : null}
+    {rows.length ? <footer className="class-reporting__footer"><span>Showing {Math.min(page * pageSize, rows.length)} of {rows.length}</span><div className="class-reporting__pagination"><button type="button" className="pagination-button" aria-label="Previous page" disabled={page <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))}><ChevronLeft size={16} /></button><button type="button" className="pagination-button is-current" aria-current="page">{page}</button><button type="button" className="pagination-button" aria-label="Next page" disabled={page >= pageCount} onClick={() => setPage((value) => Math.min(pageCount, value + 1))}><ChevronRight size={16} /></button></div></footer> : null}</div>
+    {selectedReportEvent && selectedLesson ? <LessonLogDetailsDialog
+      lesson={{
+        name: eventDisplayName(selectedReportEvent),
+        date: reportingDate(selectedReportEvent).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" }),
+        time: [formatTime(selectedReportEvent.startMinutes), formatTime(selectedReportEvent.startMinutes + selectedReportEvent.duration)].join("–"),
+        duration: selectedReportEvent.duration,
+        status: selectedReportEvent.classStatus || "Scheduled",
+        ...selectedLesson,
+        teachers: selectedReportEvent.teacherNames?.filter(Boolean) ?? [],
+        participants: Array.from(new Set([...(selectedReportEvent.studentName ? [selectedReportEvent.studentName] : []), ...(selectedReportEvent.studentEmails ?? []).map((email) => scheduleStudents.find((student) => student.email === email)?.name ?? email)])).map((name) => { const student = scheduleStudents.find((item) => item.name === name); return { name: name.includes("@") ? "—" : name, email: student?.email ?? (name.includes("@") ? name : undefined) }; }),
+        observation: selectedReportEvent.observation,
+      }}
+      index={selectedReportIndex} total={rows.length}
+      onClose={() => setSelectedReportEvent(null)}
+      onPrevious={() => { if (selectedReportIndex > 0) setSelectedReportEvent(rows[selectedReportIndex - 1]); }}
+      onNext={() => { if (selectedReportIndex < rows.length - 1) setSelectedReportEvent(rows[selectedReportIndex + 1]); }}
+    /> : null}
+    {isExportingLog ? <div className="calendar-toast calendar-toast--success" role="status" aria-live="polite"><span className="calendar-toast__icon" aria-hidden="true"><Check size={16} strokeWidth={2.5} /></span><div className="calendar-toast__copy"><strong>Report ready</strong><span>Use Print / Save as PDF in the report preview.</span></div></div> : null}
   </section>;
 }
 
@@ -772,7 +738,6 @@ const initialStudents: StudentRecord[] = [
   { id: 2, name: "Student 1", email: "1@student.com", status: "Enabled", level: "A2+", progress: 0, studyTime: "00:00 hr", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "4 hours ago", attendance: ["absent", "absent", "absent", "absent"] },
   { id: 3, name: "Student 2", email: "2@student.com", status: "Enabled", level: "A1", progress: 8, studyTime: "01 min", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "a month ago", attendance: ["present", "present", "absent", "present"] },
   { id: 4, name: "Teste Desabilitar", email: "testedeshabilitar@flexge.com", status: "Disabled", level: "A1", progress: 0, studyTime: "00:00 hr", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "-", attendance: ["absent", "absent", "absent", "absent"] },
-  { id: 5, name: "Anna Johnson", email: "anna.johnson@example.com", status: "Enabled", level: "A2", progress: 100, studyTime: "09:43 min", weeklyGoal: "09 reports / 09", lastSeen: "Sep 24, 2026", attendance: ["present", "present", "present", "present"], oralProductionReports: 9, lastOralProductionActivity: "Sep 24, 2026" },
 ];
 const resourceTagOptions = ["Flashcards", "Classroom", "Lesson material", "Speaking", "Activity", "Pair work", "Game", "Warm-up", "Worksheet", "Grammar"];
 const hours = Array.from({ length: 24 }, (_, index) => index);
@@ -840,7 +805,6 @@ function formatHourLabel(hour: number) {
 }
 
 const studentAvatarImages: Record<string, string> = {
-  "Anna Johnson": "/student-avatars/anna-johnson-demo.png",
   "Ana Martins": "/avatar-photo.png",
   "Gabriel Santos": "/avatar-photo-gabriel.png",
   "Lucas Almeida": "/avatar-photo-gabriel.png",
@@ -1464,6 +1428,7 @@ function PlanningView({ event, date, classEvents, onSelectClass, onBack, mode = 
 
         <div className="planning-content">
           <div className="class-plan-layout">
+            {activeTab === "Lesson Plan" && event.appliedPlan ? <p className="lesson-plans-test-note">Applied from My Lesson Plans · {event.appliedPlan.title} · Version {event.appliedPlan.sourceVersion} · Browser test</p> : null}
             {activeTab === "Lesson Plan" ? <ClassPlanContent classPlan={loadedClassPlan} loadState={planLoadState} onRetry={() => setLoadAttempt((attempt) => attempt + 1)} readOnly={mode === "report"} /> : null}
             {activeTab === "Lesson Summary" ? <ClassSummaryContent readOnly={mode === "report"} /> : null}
             {mode === "edit" && activeTab === "Lesson Plan" && activeTool === "Lessons" && <section className="planning-tool-panel planning-classes-panel" aria-label="Lessons">
@@ -2119,18 +2084,9 @@ function ResourcesView() {
   );
 }
 
-function StudentsView({ profileStudent, onOpenProfile, onReturn }: { profileStudent: { name: string; email: string } | null; onOpenProfile: (student: StudentRecord) => void; onReturn: () => void }) {
+function StudentsView() {
   const [query, setQuery] = useState("");
   const students = useMemo(() => initialStudents.filter((student) => `${student.name} ${student.email}`.toLowerCase().includes(query.toLowerCase())), [query]);
-
-  if (profileStudent) return <StudentOralProductionHistory embedded studentName={profileStudent.name} studentEmail={profileStudent.email} onReturn={onReturn} key={`${profileStudent.name}:${profileStudent.email}`} />;
-
-  const profileUrl = (student: StudentRecord) => `/?module=students&student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}`;
-  const openProfile = (event: MouseEvent<HTMLAnchorElement>, student: StudentRecord) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    onOpenProfile(student);
-  };
 
   return (
     <section className="students-screen" aria-label="Students">
@@ -2146,16 +2102,17 @@ function StudentsView({ profileStudent, onOpenProfile, onReturn }: { profileStud
       </div>
       <div className="students-table-wrap">
         <div className="students-table-scroll">
-        <table className="students-table students-table--oral-history">
-          <thead><tr><th scope="col">Student</th><th scope="col">Level</th><th scope="col">Oral Production</th><th scope="col">Last activity</th><th scope="col">Actions</th></tr></thead>
+        <table className="students-table">
+          <thead><tr><th scope="col" className="students-table__check"><input type="checkbox" aria-label="Select all students" /></th><th scope="col">Student <ChevronDown size={13} /></th><th scope="col">Course <ChevronDown size={13} /></th><th scope="col">Weekly goal <ChevronDown size={13} /></th><th scope="col">Last seen <ChevronDown size={13} /></th><th scope="col">Actions</th></tr></thead>
           <tbody>
             {students.map((student) => (
               <tr key={student.id} className={student.status === "Disabled" ? "is-disabled" : ""}>
-                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={profileUrl(student)} onClick={(event) => openProfile(event, student)}>{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
-                <td><span className="course-badge">{student.level}</span></td>
-                <td>{student.oralProductionReports ? `${student.oralProductionReports} completed` : "No reports"}</td>
-                <td className="last-seen">{student.lastOralProductionActivity ?? "—"}</td>
-                <td><a className="outline-button student-profile-action" href={profileUrl(student)} onClick={(event) => openProfile(event, student)}>View profile<ChevronRight size={14} /></a></td>
+                <td className="students-table__check"><input type="checkbox" aria-label={`Select ${student.name}`} /></td>
+                 <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><button className="student-name-button" type="button">{student.name}</button><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
+                <td><div className="course-cell"><span className="course-badge">{student.level}</span><div><small>Progress</small><span>{student.progress}% <b>|</b> {student.studyTime}</span></div></div></td>
+                <td><div className="goal-cell"><span>{student.weeklyGoal}</span><div className="goal-bar"><i style={{ width: `${Math.min(student.progress, 100)}%` }} /></div><div className="attendance-row" aria-label="Last four weeks attendance">{student.attendance.map((value, index) => <span key={index} className={`attendance-dot attendance-dot--${value}`} title={value === "present" ? "Present" : "Absent"}>{value === "present" ? "✓" : "×"}</span>)}</div><small>Last 4 weeks</small></div></td>
+                <td className="last-seen">{student.lastSeen}</td>
+                <td><button className="student-actions-button" type="button" aria-label={`Actions for ${student.name}`}>Actions<ChevronDown size={14} /></button></td>
               </tr>
             ))}
           </tbody>
@@ -2354,29 +2311,12 @@ function ScheduleRepeatUnitSelect({ value, onChange }: { value: ScheduleDraft["r
   return <Popover.Root><Popover.Trigger asChild><button className="schedule-select-trigger" type="button" aria-label="Repeat unit"><span>{value}</span><ChevronDown size={16} aria-hidden="true" /></button></Popover.Trigger><Popover.Portal><Popover.Content className="schedule-select-menu" side="bottom" align="start" sideOffset={6}><div role="listbox" aria-label="Repeat unit">{(["Week", "Month"] as const).map((unit) => <button key={unit} type="button" role="option" aria-selected={unit === value} className={unit === value ? "is-selected" : ""} onClick={() => onChange(unit)}>{unit}{unit === value ? <Check size={16} aria-hidden="true" /> : null}</button>)}</div></Popover.Content></Popover.Portal></Popover.Root>;
 }
 
-const emptyCalendarFilters: CalendarFilters = { group: [], teacher: [], student: [], classStatus: [], planningStatus: [] };
 
-function CalendarFilterSelect({ icon: Icon, label, value, options, onChange }: { icon: typeof Users; label: string; value: string[]; options: string[]; onChange: (value: string[]) => void }) {
-  const displayValue = !value.length ? label : value.length === 1 ? value[0] : `${value.length} selected`;
-  const toggleOption = (option: string) => onChange(value.includes(option) ? value.filter((item) => item !== option) : [...value, option]);
-  return <Popover.Root><Popover.Trigger asChild><button className="calendar-filter-select" type="button" aria-label={label}><Icon size={17} aria-hidden="true" /><span>{displayValue}</span><ChevronDown size={17} aria-hidden="true" /></button></Popover.Trigger><Popover.Portal><Popover.Content className="calendar-filter-options" side="bottom" align="start" sideOffset={4}><div role="listbox" aria-label={label} aria-multiselectable="true"><button type="button" role="option" aria-selected={!value.length} className={!value.length ? "is-selected" : ""} onClick={() => onChange([])}><span className="calendar-filter-options__check" aria-hidden="true">{!value.length ? <Check size={13} /> : null}</span>{label}</button>{options.map((option) => <button key={option} type="button" role="option" aria-selected={value.includes(option)} className={value.includes(option) ? "is-selected" : ""} onClick={() => toggleOption(option)}><span className="calendar-filter-options__check" aria-hidden="true">{value.includes(option) ? <Check size={13} /> : null}</span>{option}</button>)}</div></Popover.Content></Popover.Portal></Popover.Root>;
-}
-
-function CalendarFilterPopover({ filters, onApply }: { filters: CalendarFilters; onApply: (filters: CalendarFilters) => void }) {
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState(filters);
-  const selectedCount = Object.values(filters).flat().length;
-  const update = (key: keyof CalendarFilters, value: string[]) => setDraft((current) => ({ ...current, [key]: value }));
-  const reset = () => { setDraft(emptyCalendarFilters); onApply(emptyCalendarFilters); };
-  const apply = () => { onApply(draft); setOpen(false); };
-  return <Popover.Root open={open} onOpenChange={(next) => { if (next) setDraft(filters); setOpen(next); }}><Popover.Trigger asChild><button className={`outline-button calendar-filter-button${selectedCount ? " is-active" : ""}`} type="button"><ListFilter size={16} strokeWidth={1.8} />Filter{selectedCount ? <span>{selectedCount}</span> : null}</button></Popover.Trigger><Popover.Portal><Popover.Content className="calendar-filter-menu" side="bottom" align="end" sideOffset={6} aria-label="Filter lessons"><div className="calendar-filter-groups"><section className="calendar-filter-group" aria-labelledby="calendar-filter-people"><h2 id="calendar-filter-people">People</h2><CalendarFilterSelect icon={Users} label="All Groups" value={draft.group} options={["B1 Group", "A2 Group", "Conversation Club"]} onChange={(value) => update("group", value)} /><CalendarFilterSelect icon={User} label="All Teachers" value={draft.teacher} options={["Mariana Costa", "Lucas Almeida"]} onChange={(value) => update("teacher", value)} /><CalendarFilterSelect icon={GraduationCap} label="All Students" value={draft.student} options={["Ana Beatriz Costa", "Camila Pereira", "Gabriel Santos", "Mariana Silva"]} onChange={(value) => update("student", value)} /></section><section className="calendar-filter-group" aria-labelledby="calendar-filter-status"><h2 id="calendar-filter-status">Class status</h2><CalendarFilterSelect icon={CalendarDays} label="All Class Status" value={draft.classStatus} options={["Scheduled", "Rescheduled", "Canceled", "Student no-show"]} onChange={(value) => update("classStatus", value)} /><CalendarFilterSelect icon={BookOpen} label="All Planning Status" value={draft.planningStatus} options={["To Plan", "Planning", "Planned", "Taught"]} onChange={(value) => update("planningStatus", value)} /></section></div><div className="calendar-filter-menu__actions"><button type="button" onClick={reset}>Clear Filter</button><button type="button" onClick={apply}>Apply</button></div></Popover.Content></Popover.Portal></Popover.Root>;
-}
-
-function OtherEventSelection({ query, setQuery, students, selectedStudents, selectedTeachers, onStudentsChange, onTeachersChange, onBack }: { query: string; setQuery: (value: string) => void; students: typeof scheduleStudents; selectedStudents: string[]; selectedTeachers: string[]; onStudentsChange: (values: string[]) => void; onTeachersChange: (values: string[]) => void; onBack: () => void }) {
+function OtherEventSelection({ query, setQuery, students, selectedStudents, selectedTeachers, onStudentsChange, onTeachersChange }: { query: string; setQuery: (value: string) => void; students: typeof scheduleStudents; selectedStudents: string[]; selectedTeachers: string[]; onStudentsChange: (values: string[]) => void; onTeachersChange: (values: string[]) => void }) {
   const [tab, setTab] = useState<"students" | "teachers">("students");
   const filteredStudents = students.filter((student) => `${student.name} ${student.email}`.toLowerCase().includes(query.toLowerCase()));
   const filteredTeachers = scheduleTeachers.filter((teacher) => teacher.toLowerCase().includes(query.toLowerCase()));
-  return <div className="schedule-other-selection"><div className="schedule-modal__intro"><button type="button" className="schedule-back" onClick={onBack} aria-label="Back to event type"><ChevronLeft size={16} /></button><span>Select the students and/or teachers for this event</span></div><div className="schedule-other-tabs" role="tablist"><button type="button" className={tab === "students" ? "is-active" : ""} role="tab" aria-selected={tab === "students"} onClick={() => { setTab("students"); setQuery(""); }}>Students <span aria-label={`${selectedStudents.length} students selected`}>{selectedStudents.length}</span></button><button type="button" className={tab === "teachers" ? "is-active" : ""} role="tab" aria-selected={tab === "teachers"} onClick={() => { setTab("teachers"); setQuery(""); }}>Teachers <span aria-label={`${selectedTeachers.length} teachers selected`}>{selectedTeachers.length}</span></button></div><div className="schedule-custom-student-controls"><label className="schedule-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or email" /></label>{tab === "students" ? <select aria-label="Student group filter"><option>All Students</option><option>B1 Group</option><option>A2 Group</option><option>A1 Group</option></select> : null}</div><div className="schedule-student-list schedule-custom-student-list">{tab === "students" ? filteredStudents.map((student) => { const selected = selectedStudents.includes(student.email); return <label className={selected ? "is-selected" : ""} key={student.email}><input type="checkbox" checked={selected} onChange={() => onStudentsChange(selected ? selectedStudents.filter((email) => email !== student.email) : [...selectedStudents, student.email])} /><StudentAvatar name={student.name} className="schedule-student-avatar" /><span><strong>{student.name}</strong><small>{student.group}</small></span></label>; }) : filteredTeachers.map((teacher) => { const selected = selectedTeachers.includes(teacher); return <label className={selected ? "is-selected" : ""} key={teacher}><input type="checkbox" checked={selected} onChange={() => onTeachersChange(selected ? selectedTeachers.filter((name) => name !== teacher) : [...selectedTeachers, teacher])} /><StudentAvatar name={teacher} className="schedule-student-avatar" /><span><strong>{teacher}</strong><small>Teacher</small></span></label>; })}</div></div>;
+  return <div className="schedule-other-selection"><div className="schedule-other-tabs" role="tablist"><button type="button" className={tab === "students" ? "is-active" : ""} role="tab" aria-selected={tab === "students"} onClick={() => { setTab("students"); setQuery(""); }}>Students <span aria-label={`${selectedStudents.length} students selected`}>{selectedStudents.length}</span></button><button type="button" className={tab === "teachers" ? "is-active" : ""} role="tab" aria-selected={tab === "teachers"} onClick={() => { setTab("teachers"); setQuery(""); }}>Teachers <span aria-label={`${selectedTeachers.length} teachers selected`}>{selectedTeachers.length}</span></button></div><div className="schedule-custom-student-controls"><label className="schedule-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or email" /></label>{tab === "students" ? <select aria-label="Student group filter"><option>All Students</option><option>B1 Group</option><option>A2 Group</option><option>A1 Group</option></select> : null}</div><div className="schedule-student-list schedule-custom-student-list">{tab === "students" ? filteredStudents.map((student) => { const selected = selectedStudents.includes(student.email); return <label className={selected ? "is-selected" : ""} key={student.email}><input type="checkbox" checked={selected} onChange={() => onStudentsChange(selected ? selectedStudents.filter((email) => email !== student.email) : [...selectedStudents, student.email])} /><StudentAvatar name={student.name} className="schedule-student-avatar" /><span><strong>{student.name}</strong><small>{student.group}</small></span></label>; }) : filteredTeachers.map((teacher) => { const selected = selectedTeachers.includes(teacher); return <label className={selected ? "is-selected" : ""} key={teacher}><input type="checkbox" checked={selected} onChange={() => onTeachersChange(selected ? selectedTeachers.filter((name) => name !== teacher) : [...selectedTeachers, teacher])} /><StudentAvatar name={teacher} className="schedule-student-avatar" /><span><strong>{teacher}</strong><small>Teacher</small></span></label>; })}</div></div>;
 }
 
 function ScheduleEventModal({ onClose, onSave, onScheduleChange, editingEvent, defaultDate, defaultStart = "12:00", defaultDuration = 60, defaultType, scheduledEvents, variant = "modal", contextLabel, isSaving = false, isFullEnglish = false }: { onClose: () => void; onSave: (draft: ScheduleDraft, editingEvent?: PlannerEvent) => Promise<void> | void; onScheduleChange?: (values: { date: string; start: string; end: string; allDay?: boolean; allDayEndDate?: string }) => void; editingEvent?: PlannerEvent | null; defaultDate: string; defaultStart?: string; defaultDuration?: number; defaultType?: ScheduleDraft["type"]; scheduledEvents: PlannerEvent[]; variant?: "modal" | "popover"; contextLabel?: string; isSaving?: boolean; isFullEnglish?: boolean }) {
@@ -2406,9 +2346,10 @@ function ScheduleEventModal({ onClose, onSave, onScheduleChange, editingEvent, d
   const customStudents = students.filter((student) => studentGroupFilter === "all" || student.group === studentGroupFilter);
   const titleInvalid = submitAttempted && !draft.title.trim();
   const teacherInvalid = (draft.type === "individual" || draft.type === "group") && submitAttempted && !draft.teacher;
-  const canAccessScheduleDetails = draft.type === "custom" || draft.type === "other" || draft.type === "task" || draft.type === "away" || Boolean(draft.student) || Boolean(draft.group);
   const selectedGroupColor = scheduleGroups.find((group) => group.name === draft.group?.name)?.color ?? "#753fe5";
   const otherParticipantsSummary = `${draft.otherStudents.length} ${draft.otherStudents.length === 1 ? "Student" : "Students"} · ${draft.otherTeachers.length} ${draft.otherTeachers.length === 1 ? "Teacher" : "Teachers"}`;
+  const detailsHeading = draft.type === "individual" ? "Individual Class details" : draft.type === "group" ? "Group Class details" : draft.type === "task" ? "Task details" : draft.type === "away" ? "Away details" : draft.type === "other" ? "Other event details" : "Custom Class details";
+  const selectionHeading = draft.type === "individual" ? "Select the student for this class" : draft.type === "group" ? "Select the group for this class" : draft.type === "other" ? "Select the students and/or teachers for this event" : "Select the students for this class";
   const canBeAllDay = draft.type === "away";
   const isAllDay = canBeAllDay && draft.allDay;
   const draftStartMinutes = isAllDay ? 0 : scheduleTimeToMinutes(draft.start);
@@ -2440,33 +2381,18 @@ function ScheduleEventModal({ onClose, onSave, onScheduleChange, editingEvent, d
     setStep(2);
   }
 
-  function goToStep(target: 1 | 2 | 3) {
-    if (target === 1 || target === 2 || (target === 3 && canAccessScheduleDetails)) {
-      setStep(target);
-    }
-  }
-  const stepItems = isEditing
-    ? draft.type === "task" || draft.type === "away"
-    ? [{ label: "Schedule Details", target: 3 as const }]
-      : [{ label: "Event Details", target: 2 as const }, { label: "Schedule Details", target: 3 as const }]
-    : step === 1
-    ? [{ label: "Event Type", target: 1 as const }]
-    : draft.type === "task" || draft.type === "away"
-      ? [{ label: "Event Type", target: 1 as const }, { label: "Schedule Details", target: 3 as const }]
-      : [{ label: "Event Type", target: 1 as const }, { label: "Event Details", target: 2 as const }, { label: "Schedule Details", target: 3 as const }];
   const dialog = <section className={`schedule-modal${variant === "popover" ? " schedule-modal--popover" : ""}`} role="dialog" aria-modal={variant === "popover" ? undefined : true} aria-labelledby="schedule-event-title">
     <header className="schedule-modal__header"><div><h2 id="schedule-event-title">{isEditing ? "Edit Schedule" : "New Schedule"}</h2>{contextLabel ? <span className="schedule-modal__context">{contextLabel}</span> : null}</div><button type="button" onClick={onClose} disabled={isSaving} aria-label="Close schedule event"><X size={16} /></button></header>
-    <ol className="schedule-steps">{stepItems.map(({ label, target }) => { const disabled = target === 3 && !canAccessScheduleDetails; return <li key={label} className={step > target ? "is-complete" : step === target ? "is-current" : ""}><button type="button" disabled={disabled} onClick={() => goToStep(target)}><span>{step > target ? <Check size={13} /> : target === 3 && draft.type === "task" ? 2 : target}</span>{label}</button></li>; })}</ol>
+    {step > 1 ? <div className="schedule-modal__step-header">
+      {!isEditing ? <button type="button" className="schedule-back" onClick={() => step === 2 ? setStep(1) : setStep(draft.type === "individual" || draft.type === "group" || draft.type === "custom" || draft.type === "other" ? 2 : 1)} aria-label={step === 2 ? "Back to event type" : draft.type === "individual" || draft.type === "group" || draft.type === "custom" || draft.type === "other" ? "Back to event details" : "Back to event type"}><ChevronLeft size={14} /></button> : null}
+      <span className="schedule-event-summary"><b>{step === 2 ? selectionHeading : detailsHeading}</b>{step === 3 && draft.student ? <><span className="schedule-event-summary__dot" aria-hidden="true">·</span><StudentAvatar name={draft.student.name} className="schedule-event-summary__avatar" /><b>{draft.student.name}</b></> : step === 3 && draft.group ? <><span className="schedule-event-summary__dot" aria-hidden="true">·</span><span className="schedule-event-summary__group-dot" style={{ backgroundColor: selectedGroupColor }} aria-hidden="true" /><b>{draft.group.name} ({draft.group.students} Students)</b></> : step === 3 && draft.type === "custom" ? <b> · {draft.customStudents.length} {draft.customStudents.length === 1 ? "Student" : "Students"} selected</b> : step === 3 && draft.type === "other" ? <b> · {otherParticipantsSummary}</b> : null}</span>
+    </div> : null}
     <div className={`schedule-modal__body${step === 2 && draft.type === "other" ? " is-other-selection" : ""}${isEditing ? " is-editing" : ""}`}>
       {step === 1 && !isEditing ? <div className="schedule-type-step"><p>What would you like to schedule?</p><div className="schedule-type-options"><button type="button" onClick={() => chooseEventType("individual")}><span className="schedule-type-icon"><User size={20} /></span><span className="schedule-type-copy"><strong>Individual Class</strong><small>Schedule a one-on-one class with a student.</small></span><ChevronRight size={20} /></button><button type="button" onClick={() => chooseEventType("group")}><span className="schedule-type-icon schedule-type-icon--group"><Users size={20} /></span><span className="schedule-type-copy"><strong>Group Class</strong><small>Schedule a class with multiple students.</small></span><ChevronRight size={20} /></button><button type="button" onClick={() => chooseEventType("custom")}><span className="schedule-type-icon schedule-type-icon--custom"><UserRoundCog size={20} /></span><span className="schedule-type-copy"><strong>Custom Class</strong><small>Create a class outside the regular course or group setup.</small></span><ChevronRight size={20} /></button><div className="schedule-type-section-label">Other events</div><button type="button" onClick={() => chooseEventType("task")}><span className="schedule-type-icon schedule-type-icon--task"><ListTodo size={20} /></span><span className="schedule-type-copy"><strong>Task</strong><small>Add a task or reminder to your calendar.</small></span><ChevronRight size={20} /></button><button type="button" onClick={() => chooseEventType("away")}><span className="schedule-type-icon schedule-type-icon--away"><CalendarX2 size={20} /></span><span className="schedule-type-copy"><strong>Away</strong><small>Block time when you are unavailable for classes.</small></span><ChevronRight size={20} /></button></div></div> : null}
-      {step === 2 ? <div className={draft.type === "custom" ? "schedule-student-step schedule-custom-student-step" : "schedule-student-step"}><div className="schedule-modal__intro"><button type="button" className="schedule-back" onClick={() => { if (isEditing) onClose(); else setStep(1); }} aria-label={isEditing ? "Close edit event" : "Back to event type"}><ChevronLeft size={16} /></button><span>{draft.type === "individual" ? "Select the student for this class" : draft.type === "group" ? "Select the group for this class" : "Select the students for this class"}</span></div>{draft.type === "individual" ? <><label className="schedule-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or email" /></label><div className="schedule-student-list">{students.map((student) => <button type="button" className={draft.student?.email === student.email ? "is-selected" : ""} key={student.email} onClick={() => { update({ student, title: `${student.name} Class` }); setStep(3); }}><StudentAvatar name={student.name} className="schedule-student-avatar" /><span><strong>{student.name}</strong><small>{student.email}</small></span>{draft.student?.email === student.email ? <Check size={16} /> : null}</button>)}</div></> : draft.type === "group" ? <div className="schedule-student-list schedule-group-list">{scheduleGroups.map((group) => <button type="button" className={draft.group?.name === group.name ? "is-selected" : ""} key={group.name} onClick={() => { update({ group, title: `${group.name} Class` }); setStep(3); }}><span className="schedule-group-swatch" style={{ backgroundColor: group.color }} aria-hidden="true" /><span><strong>{group.name}</strong><small>{group.students} Students</small></span>{draft.group?.name === group.name ? <Check size={16} /> : null}</button>)}</div> : <><div className="schedule-custom-student-controls"><label className="schedule-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or email" /></label><select aria-label="Student group filter" value={studentGroupFilter} onChange={(event) => setStudentGroupFilter(event.target.value)}><option value="all">All Students</option><option value="B1 Group">B1 Group</option><option value="A2 Group">A2 Group</option><option value="A1 Group">A1 Group</option></select></div><div className="schedule-student-list schedule-custom-student-list">{customStudents.map((student) => { const selected = draft.customStudents.includes(student.email); return <label className={selected ? "is-selected" : ""} key={student.email}><input type="checkbox" checked={selected} onChange={() => update({ customStudents: selected ? draft.customStudents.filter((email) => email !== student.email) : [...draft.customStudents, student.email] })} /><StudentAvatar name={student.name} className="schedule-student-avatar" /><span><strong>{student.name}</strong><small>{student.group}</small></span></label>; })}</div></>}</div> : null}
-      {step === 2 && draft.type === "other" ? <OtherEventSelection query={query} setQuery={setQuery} students={students} selectedStudents={draft.otherStudents} selectedTeachers={draft.otherTeachers} onStudentsChange={(otherStudents) => update({ otherStudents })} onTeachersChange={(otherTeachers) => update({ otherTeachers })} onBack={() => { if (isEditing) onClose(); else setStep(1); }} /> : null}
+      {step === 2 ? <div className={draft.type === "custom" ? "schedule-student-step schedule-custom-student-step" : "schedule-student-step"}>{draft.type === "individual" ? <><label className="schedule-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or email" /></label><div className="schedule-student-list">{students.map((student) => <button type="button" className={draft.student?.email === student.email ? "is-selected" : ""} key={student.email} onClick={() => { update({ student, title: `${student.name} Class` }); setStep(3); }}><StudentAvatar name={student.name} className="schedule-student-avatar" /><span><strong>{student.name}</strong><small>{student.email}</small></span>{draft.student?.email === student.email ? <Check size={16} /> : null}</button>)}</div></> : draft.type === "group" ? <div className="schedule-student-list schedule-group-list">{scheduleGroups.map((group) => <button type="button" className={draft.group?.name === group.name ? "is-selected" : ""} key={group.name} onClick={() => { update({ group, title: `${group.name} Class` }); setStep(3); }}><span className="schedule-group-swatch" style={{ backgroundColor: group.color }} aria-hidden="true" /><span><strong>{group.name}</strong><small>{group.students} Students</small></span>{draft.group?.name === group.name ? <Check size={16} /> : null}</button>)}</div> : draft.type === "other" ? null : <><div className="schedule-custom-student-controls"><label className="schedule-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or email" /></label><select aria-label="Student group filter" value={studentGroupFilter} onChange={(event) => setStudentGroupFilter(event.target.value)}><option value="all">All Students</option><option value="B1 Group">B1 Group</option><option value="A2 Group">A2 Group</option><option value="A1 Group">A1 Group</option></select></div><div className="schedule-student-list schedule-custom-student-list">{customStudents.map((student) => { const selected = draft.customStudents.includes(student.email); return <label className={selected ? "is-selected" : ""} key={student.email}><input type="checkbox" checked={selected} onChange={() => update({ customStudents: selected ? draft.customStudents.filter((email) => email !== student.email) : [...draft.customStudents, student.email] })} /><StudentAvatar name={student.name} className="schedule-student-avatar" /><span><strong>{student.name}</strong><small>{student.group}</small></span></label>; })}</div></>}</div> : null}
+      {step === 2 && draft.type === "other" ? <OtherEventSelection query={query} setQuery={setQuery} students={students} selectedStudents={draft.otherStudents} selectedTeachers={draft.otherTeachers} onStudentsChange={(otherStudents) => update({ otherStudents })} onTeachersChange={(otherTeachers) => update({ otherTeachers })} /> : null}
       {step === 3 ? (
         <div className={draft.type === "custom" ? "schedule-details-step schedule-details-step--custom" : "schedule-details-step"}>
-          <div className="schedule-modal__intro">
-            <button type="button" className="schedule-back" onClick={() => setStep(draft.type === "individual" || draft.type === "group" || draft.type === "custom" || draft.type === "other" ? 2 : 1)} aria-label={draft.type === "individual" || draft.type === "group" || draft.type === "custom" || draft.type === "other" ? "Back to event details" : "Back to event type"}><ChevronLeft size={16} /></button>
-            <span className="schedule-event-summary">Resume Event: <b>{draft.type === "individual" ? "Individual Class" : draft.type === "group" ? "Group Class" : draft.type === "task" ? "Task" : draft.type === "away" ? "Away" : draft.type === "other" ? "Other" : "Class Custom"}</b>{draft.student ? <><span className="schedule-event-summary__dot" aria-hidden="true">·</span><StudentAvatar name={draft.student.name} className="schedule-event-summary__avatar" /><b>{draft.student.name}</b></> : draft.group ? <><span className="schedule-event-summary__dot" aria-hidden="true">·</span><span className="schedule-event-summary__group-dot" style={{ backgroundColor: selectedGroupColor }} aria-hidden="true" /><b>{draft.group.name} ({draft.group.students} Students)</b></> : draft.type === "custom" ? <b> · {draft.customStudents.length} {draft.customStudents.length === 1 ? "Student" : "Students"} selected</b> : draft.type === "other" ? <b> · {otherParticipantsSummary}</b> : null}</span>
-          </div>
           <div className="schedule-form-row">
             <label className={titleInvalid ? "is-invalid" : ""}>
               <span className="schedule-form-label">Title <b>*</b></span>
@@ -2568,17 +2494,21 @@ export default function Home() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [weekMotionDirection, setWeekMotionDirection] = useState<"previous" | "next" | null>(null);
   const [plannerEvents, setPlannerEvents] = useState<PlannerEvent[]>([]);
+  const [demoClasses, setDemoClasses] = useState<PlannerEvent[]>([]);
   const [planApplications, setPlanApplications] = useState<Application[]>([]);
-  useEffect(() => { setPlanApplications(readApplications()); }, []);
+  useEffect(() => {
+    setPlanApplications(readApplications());
+    try { const saved = JSON.parse(localStorage.getItem("flexge-bulk-demo-classes-v1") ?? "[]"); if (Array.isArray(saved)) setDemoClasses(saved.filter(item => typeof item.id === "string" && item.id.startsWith("bulk-demo-") && typeof item.scheduledDate === "string" && typeof item.title === "string" && Number.isInteger(item.startMinutes))); } catch { /* Browser storage may be unavailable. */ }
+  }, []);
   const eventVersion = (event: PlannerEvent) => JSON.stringify([event.updatedAt ?? "", event.classPlanId ?? "", event.status, event.scheduledDate, event.startMinutes, event.duration]);
-  const events = useMemo(() => plannerEvents.map(event => {
+  const events = useMemo(() => [...plannerEvents, ...demoClasses].map(event => {
     const application = [...planApplications].reverse().find(record => record.eventId === String(event.id) && record.eventVersion === eventVersion(event));
-    return application ? { ...event, status: "Planned" as EventStatus, classPlanId: application.snapshot.id, appliedPlan: application.snapshot, baseVersion: eventVersion(event) } : event;
-  }), [plannerEvents, planApplications]);
+    return application ? { ...event, status: "Planned" as EventStatus, classPlanId: application.snapshot.id, appliedPlan: application.snapshot } : event;
+  }), [plannerEvents, demoClasses, planApplications]);
   const planningClasses: PlannerClass[] = events.filter(isClassEvent).map(event => ({
     id: String(event.id), title: eventDisplayName(event), date: reportingDateKey(event), startMinutes: event.startMinutes, duration: event.duration,
     status: event.status, classStatus: event.classStatus, studentName: event.studentName, groupName: event.kind === "individual" ? undefined : event.groupName ?? event.title, teacherNames: event.teacherNames, planId: event.classPlanId, planTitle: classPlanForEvent(event)?.title,
-    version: event.baseVersion ?? eventVersion(event), sourceId: event.appliedPlan?.sourceId, sourceVersion: event.appliedPlan?.sourceVersion,
+    version: eventVersion([...plannerEvents, ...demoClasses].find(original => String(original.id) === String(event.id)) ?? event), sourceId: event.appliedPlan?.sourceId, sourceVersion: event.appliedPlan?.sourceVersion,
   }));
   function applyLessonPlan(plan: LessonPlan, requests: ApplicationRequest[]) {
     const results = reviewApplications(planningClasses, plan, requests);
@@ -2600,13 +2530,7 @@ export default function Home() {
     }
   }
   const [calendarFilters, setCalendarFilters] = useState<CalendarFilters>(emptyCalendarFilters);
-  const filteredEvents = events.filter((event) => {
-    if (calendarFilters.classStatus.length && (!event.classStatus || !calendarFilters.classStatus.includes(event.classStatus))) return false;
-    if (calendarFilters.planningStatus.length && !calendarFilters.planningStatus.includes(event.status)) return false;
-    if (calendarFilters.student.length && (!event.studentName || !calendarFilters.student.includes(event.studentName))) return false;
-    if (calendarFilters.group.length && !calendarFilters.group.some((group) => event.title.toLowerCase().includes(group.replace(" Group", "").toLowerCase()))) return false;
-    return true;
-  });
+  const filteredEvents = events.filter(event => matchesCalendarFilters(event, calendarFilters));
   const [selectedEvent, setSelectedEvent] = useState<PlannerEvent | null>(null);
   const [calendarPresentation, setCalendarPresentation] = useState<CalendarPresentation>("calendar");
   const [showSaturday, setShowSaturday] = useState(true);
@@ -2616,9 +2540,8 @@ export default function Home() {
   const [planningSelection, setPlanningSelection] = useState<{ event: PlannerEvent; date: Date; source?: "report" } | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== "undefined" && window.localStorage.getItem("planner-sidebar") === "collapsed");
   const [darkMode, setDarkMode] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [activeModule, setActiveModule] = useState<ModuleView>("planner");
-  const [profileStudent, setProfileStudent] = useState<{ name: string; email: string } | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const isFullEnglishPlanner = activeModule === "plannerFullEnglish";
   const [isSchedulingEvent, setIsSchedulingEvent] = useState(false);
   const [isSavingEvent, setIsSavingEvent] = useState(false);
@@ -2650,35 +2573,6 @@ export default function Home() {
   }
 
   useEffect(() => () => { if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current); }, []);
-
-  useEffect(() => {
-    const syncStudentRoute = () => {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("module") !== "students") {
-        setProfileStudent(null);
-        return;
-      }
-      setActiveModule("students");
-      const name = params.get("student")?.trim();
-      setProfileStudent(name ? { name, email: params.get("email")?.trim() ?? "" } : null);
-    };
-    syncStudentRoute();
-    window.addEventListener("popstate", syncStudentRoute);
-    return () => window.removeEventListener("popstate", syncStudentRoute);
-  }, []);
-
-  function openStudentProfile(student: StudentRecord) {
-    const params = new URLSearchParams({ module: "students", student: student.name, email: student.email });
-    window.history.pushState({}, "", `/?${params.toString()}`);
-    setActiveModule("students");
-    setProfileStudent({ name: student.name, email: student.email });
-  }
-
-  function returnToStudents() {
-    window.history.pushState({}, "", "/?module=students");
-    setActiveModule("students");
-    setProfileStudent(null);
-  }
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -2744,7 +2638,7 @@ export default function Home() {
 
   function eventPayload(event: PlannerEvent) {
     return {
-      id: String(event.id), title: event.title, eventType: event.kind ?? "group", scheduledDate: event.scheduledDate ?? isoDate(addDays(startOfWeek(today), event.weekOffset * 7 + event.day)),
+      id: String(event.id), title: event.title, eventType: event.kind ?? "group", scheduledDate: event.scheduledDate ?? "2026-09-02",
       startMinutes: event.startMinutes, duration: event.duration, color: event.color, planningStatus: event.status,
       classStatus: event.classStatus ?? null, studentName: event.studentName ?? null, groupName: event.groupName ?? null,
       description: event.description ?? null, observation: event.observation ?? null, classPlanId: event.classPlanId ?? null, studentEmails: event.studentEmails ?? [], teacherNames: event.teacherNames ?? [], recurrence: event.recurrence ?? {}, updatedAt: event.updatedAt,
@@ -2940,38 +2834,7 @@ export default function Home() {
         const response = await fetch("/api/events");
         if (!response.ok) throw new Error("Unable to load calendar events");
         const data = await response.json() as { events?: ReturnType<typeof eventPayload>[] };
-        if (!active || !data.events) return;
-
-        const seedKey = "flexge-planner-demo-events-v1";
-        let savedEvents = data.events;
-        let examplesAlreadyChecked = false;
-        try { examplesAlreadyChecked = window.localStorage.getItem(seedKey) === "true"; } catch { /* Storage can be disabled; deterministic seed IDs still prevent duplicates. */ }
-        if (!examplesAlreadyChecked) {
-          const existingIds = new Set(savedEvents.map((event) => String(event.id)));
-          const weekStart = startOfWeek(today);
-          const missingExamples = initialEvents.filter((event) =>
-            !existingIds.has(`seed-${event.id}`) && !existingIds.has(String(event.id)),
-          );
-          const seedResults = await Promise.all(missingExamples.map((event) => fetch("/api/events", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(eventPayload({
-              ...event,
-              id: `seed-${event.id}`,
-              scheduledDate: isoDate(addDays(weekStart, event.weekOffset * 7 + event.day)),
-              updatedAt: new Date().toISOString(),
-            })),
-          })));
-          if (seedResults.every((result) => result.ok)) {
-            const refreshed = await fetch("/api/events");
-            if (refreshed.ok) {
-              const refreshedData = await refreshed.json() as { events?: ReturnType<typeof eventPayload>[] };
-              if (refreshedData.events) savedEvents = refreshedData.events;
-            }
-            try { window.localStorage.setItem(seedKey, "true"); } catch { /* The server-side IDs remain the source of truth. */ }
-          }
-        }
-        if (active) setPlannerEvents(savedEvents.map(plannerEventFromPayload));
+        if (active && data.events) setPlannerEvents(data.events.map(plannerEventFromPayload));
       } catch { if (active) setPlannerEvents([]); }
     }
     void loadEvents();
@@ -3043,15 +2906,6 @@ export default function Home() {
               activeId={({ lessonPlans: "My Lesson Plans", planner: "Planner", plannerFullEnglish: "Planner FullEnglish", classReporting: "Lesson Log", teacherHours: "Teacher Hours", resources: "My Resources", resourcesV2: "My Resources v2", students: "Students", studentApp: "Student App", aiConversation: "AI Studio" } as Record<string, string>)[activeModule]}
               groups={navGroups.map(group => ({ label: group.label, items: group.items.map(([label, Icon]) => ({ id: label, label, icon: <Icon size={18} strokeWidth={1.7} aria-hidden="true" /> })) }))}
               onItemSelect={label => {
-                            if (label === "My Lesson Plans") {
-                              setActiveModule("lessonPlans");
-                              setSelectedEvent(null);
-                              setPlanningSelection(null);
-                            }
-                            if (label !== "Students" && activeModule === "students") {
-                              setProfileStudent(null);
-                              window.history.replaceState({}, "", "/");
-                            }
                             if (label === "Planner") {
                               setActiveModule("planner");
                               setSelectedEvent(null);
@@ -3067,6 +2921,11 @@ export default function Home() {
                               setSelectedEvent(null);
                               setPlanningSelection(null);
                             }
+                            if (label === "My Lesson Plans") {
+                              setActiveModule("lessonPlans");
+                              setSelectedEvent(null);
+                              setPlanningSelection(null);
+                            }
                             if (label === "My Resources") {
                               setActiveModule("resources");
                               setSelectedEvent(null);
@@ -3079,8 +2938,6 @@ export default function Home() {
                             }
                             if (label === "Students") {
                               setActiveModule("students");
-                              setProfileStudent(null);
-                              window.history.replaceState({}, "", "/?module=students");
                               setSelectedEvent(null);
                               setPlanningSelection(null);
                             }
@@ -3119,7 +2976,7 @@ export default function Home() {
 
         <section className="workspace">
           {planningSelection?.source === "report" ? <>
-            <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} />
+            <ClassReportingView events={events} />
             <PlanningView
               event={planningSelection.event}
               date={planningSelection.date}
@@ -3142,7 +2999,7 @@ export default function Home() {
           ) : activeModule === "lessonPlans" ? <LessonPlansView darkMode={darkMode} classes={planningClasses} applications={planApplications} onApply={applyLessonPlan} onOpenClass={id => {
             const event = events.find(item => String(item.id) === id);
             if (event) { setActiveModule("planner"); setPlanningSelection({ event, date: reportingDate(event) }); setSelectedEvent(null); }
-          }} /> : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView profileStudent={profileStudent} onOpenProfile={openStudentProfile} onReturn={returnToStudents} /> : activeModule === "studentApp" ? <StudentAppView /> : <>
+          }} /> : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView /> : activeModule === "studentApp" ? <StudentAppView /> : <>
           <div className="calendar-toolbar">
             <div className="toolbar-left">
               <CalendarViewTabs value={calendarPresentation} onValueChange={changeCalendarPresentation} />
@@ -3154,7 +3011,7 @@ export default function Home() {
               <button className="date-button">{dateRange}<ChevronDown size={15} /></button>
             </div>
             <div className="toolbar-right">
-              <CalendarFilterPopover filters={calendarFilters} onApply={setCalendarFilters} />
+              <CalendarFilterPopover filters={calendarFilters} onApply={setCalendarFilters} options={optionsFromClasses(planningClasses)} />
               <button className="primary-button" type="button" onClick={() => { setEditingEvent(null); setNewEventDefaults(null); setIsSchedulingEvent(true); }}><Plus size={16} />New Schedule</button>
               <Popover.Root><Popover.Trigger asChild><button className="icon-button" aria-label="Planner settings"><Settings size={17} /></button></Popover.Trigger><Popover.Portal><Popover.Content className="planner-settings-menu" side="bottom" align="end" sideOffset={6} aria-label="Calendar settings"><span className="planner-settings-menu__label">Integrations</span><div className="planner-settings-menu__integrations"><button type="button"><img className="google-meet-integration-icon" src="/google-meet.svg" alt="" aria-hidden="true" /><span>Google Meet</span></button><button type="button"><span className="zoom-integration-icon" aria-hidden="true"><img src="/zoom-mark.svg" alt="" /><img src="/zoom-wordmark.svg" alt="" /></span><span>Zoom</span></button></div><div className="planner-settings-menu__divider" /><span className="planner-settings-menu__label">Weekend visibility</span><div className="planner-settings-menu__toggles"><button type="button" className="planner-settings-menu__toggle-row" onClick={() => setShowSaturday((value) => !value)}><span className={showSaturday ? "planner-switch is-on" : "planner-switch"} aria-hidden="true"><span /></span><span>Show Saturday</span></button><button type="button" className="planner-settings-menu__toggle-row" onClick={() => setShowSunday((value) => !value)}><span className={showSunday ? "planner-switch is-on" : "planner-switch"} aria-hidden="true"><span /></span><span>Show Sunday</span></button></div><div className="planner-settings-menu__divider" /><span className="planner-settings-menu__label">Calendar</span><div className="planner-settings-menu__toggles"><button type="button" className="planner-settings-menu__toggle-row" onClick={() => setShowNationalHolidays((value) => !value)}><span className={showNationalHolidays ? "planner-switch is-on" : "planner-switch"} aria-hidden="true"><span /></span><span>Show national holidays</span></button></div></Popover.Content></Popover.Portal></Popover.Root>
             </div>

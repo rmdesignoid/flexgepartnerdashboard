@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
-import { StudentOralProductionHistory } from "../../../src/features/ai-conversation/StudentOralProductionHistory";
+import { StudentOralProduction } from "../../../src/features/ai-conversation/StudentOralProduction";
 
-export const metadata: Metadata = {
-  title: "Oral Production history | Flexge",
-  description: "Student profile and Oral Production report history.",
-};
-
-export default function StudentOralProductionPage() {
-  return <StudentOralProductionHistory />;
+export default function OralProductionPage() {
+  return <StudentOralProduction />;
 }

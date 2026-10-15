@@ -4,11 +4,11 @@
 
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-import { ArrowLeft, ArrowRight, Check, Copy, FileText, Folder, Moon, Search, Settings, Sun, UserRound, X } from "lucide-react";
+import { ArrowRight, Check, Copy, FileText, Folder, Search, Settings, UserRound, X } from "lucide-react";
 
 import { IconSlot, Pagination, FilterSelect, Popover, Dialog, DialogClose, AlertDialog, DropdownMenu, ContextMenu, Combobox, MultiSelect, SegmentedControl as CoreSegmentedControl, ToggleGroup, DatePicker, DateRangePicker, Breadcrumb, type MenuItem, Checkbox, Radio, Switch, Slider, Progress, Separator, Skeleton, Spinner, Label, Toggle, LinkButton, Avatar, AvatarStack, Badge, Button, EmptyState, FormField, IconButton, Input, LoadingButton, SearchInput, Select, StatusBadge, Tabs, Textarea, Sonner, toast, ToastStack, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption } from ".";
 
-import { foundationPages, type FoundationId, coreCatalog, componentFamilies, figmaFile, type CatalogEntry, type CoreName } from "./catalog";
+import { foundationPages, type FoundationId, coreCatalog, resolveComponentFamily, figmaFile, type CatalogEntry, type CoreName } from "./catalog";
 
 import "./catalog.css";
 
@@ -16,6 +16,7 @@ import { CardExamples } from "./card-examples";
 import { SidebarExamples } from "./sidebar-examples";
 import { ColorFoundations } from "./color-foundations";
 import { LogoFoundations } from "./logo-foundations";
+import { MotionFoundations } from "./motion-foundations";
 
 
 
@@ -435,13 +436,13 @@ function ComponentDetail({ entry }: { entry: CatalogEntry }) {
 
   return <article className="catalog-detail" aria-labelledby={headingId}>
 
-    <div className="catalog-detail-heading"><div><h2 id={headingId}>{entry.name === "FormField" ? "Field" : entry.name}</h2><p>{entry.description}</p></div>{entry.figmaNode && <a className="catalog-status" href={`${entry.figmaFile ?? figmaFile}?node-id=${entry.figmaNode.replace(":", "-")}`} target="_blank" rel="noreferrer">View in Figma ↗</a>}</div>
+    <div className="catalog-detail-heading"><div><h2 id={headingId}>{entry.name === "FormField" ? "Field" : entry.name}</h2><p>{entry.description}</p></div>{entry.figmaNode && <LinkButton size="mini" variant="outline" roundness="round" className="catalog-status" href={`${entry.figmaFile ?? figmaFile}?node-id=${entry.figmaNode.replace(":", "-")}`} target="_blank" rel="noreferrer">View in Figma ↗</LinkButton>}</div>
 
     <LivePreview key={entry.name} name={entry.name} />
 
     <dl className="catalog-contract"><div><dt>Variants and states</dt><dd>{entry.variants}</dd></div><div><dt>API</dt><dd><code>{entry.props}</code></dd></div><div><dt>Usage</dt><dd>{entry.guidance}</dd></div></dl>
 
-    <div className="catalog-code-heading"><h3>Usage example</h3><button type="button" onClick={() => void copyExample()}><Copy size={14} />Copy</button></div>
+    <div className="catalog-code-heading"><h3>Usage example</h3><Button size="small" variant="outline" startIcon={copyStatus === "Example copied." ? <Check /> : <Copy />} onClick={() => void copyExample()}>{copyStatus === "Example copied." ? "Copied" : "Copy"}</Button></div>
 
     <pre className="catalog-code"><code>{entry.example}</code></pre><p className="catalog-copy-status" role="status">{copyStatus}</p>
 
@@ -460,6 +461,7 @@ function FoundationContent({ page }: { page: FoundationId }) {
     {page === "colors" && <ColorFoundations />}
     {page === "typography" && <section className="catalog-panel"><h3>Type scale</h3><p>Inter · system font fallback.</p>{["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl"].map(size => <div className="catalog-type" key={size}><code>--ds-font-size-{size}</code><span style={{ fontSize: `var(--ds-font-size-${size})`, lineHeight: `var(--ds-line-height-${size})` }}>A consistent interface</span></div>)}</section>}
     {page === "icons" && <IconFoundations />}
+    {page === "motion" && <MotionFoundations />}
     {page === "spacing" && <section className="catalog-panel"><h3>Spacing scale</h3>{[1, 2, 3, 4, 5, 6].map(step => <div className="catalog-space" key={step}><code>--ds-space-{step}</code><span style={{ width: `var(--ds-space-${step})` }} /></div>)}</section>}
     {page === "radius" && <section className="catalog-panel"><h3>Corner radii</h3><div className="catalog-radius-grid">{["sm", "md", "lg", "xl", "full"].map(radius => <div key={radius}><span style={{ borderRadius: `var(--ds-radius-${radius})` }} /><code>--ds-radius-{radius}</code></div>)}</div></section>}
     {page === "shadows" && <section className="catalog-panel"><h3>Elevation</h3><div className="catalog-shadow-grid">{["sm", "md", "lg", "popover"].map(shadow => <div key={shadow} style={{ boxShadow: `var(--ds-shadow-${shadow})` } as CSSProperties}><code>{shadow}</code></div>)}</div></section>}
@@ -468,60 +470,9 @@ function FoundationContent({ page }: { page: FoundationId }) {
 }
 
 export function DesignSystemView({ foundation, component = "button" }: { foundation?: FoundationId; component?: string }) {
-
-  const section = foundation ? "foundations" : "components";
-  const familyId = component;
-
-  const [previewTheme, setPreviewTheme] = useState<"light" | "dark">("light");
-
-  const family = componentFamilies.find(entry => entry.id === familyId) ?? componentFamilies.find(entry => entry.id === "button")!;
-
+  const family = resolveComponentFamily(component);
   const entries = family.members.map(name => coreCatalog.find(entry => entry.name === name)!);
-
-  const theme = previewTheme;
-
-  return <div className="catalog-shell ds-root" data-theme={theme}><main className="catalog catalog-standalone ds-root" lang="en" data-theme={theme}>
-
-    <header className="catalog-header">
-
-      <div className="catalog-header-leading"><LinkButton className="catalog-back" href="/" size="small" aria-label="Back to Planner" title="Back to Planner" startIcon={<ArrowLeft />} /><div><div className="catalog-title-row"><h1>Design System <span>v0.5</span></h1></div><p>Flexge 2.0 components and foundations.</p></div></div>
-
-      <div className="catalog-theme-buttons" role="group" aria-label="Catalog theme">
-
-        <IconButton label="Light theme" title="Light theme" size="small" variant={theme === "light" ? "secondary" : "ghost"} aria-pressed={theme === "light"} icon={<Sun />} onClick={() => setPreviewTheme("light")} />
-
-        <IconButton label="Dark theme" title="Dark theme" size="small" variant={theme === "dark" ? "secondary" : "ghost"} aria-pressed={theme === "dark"} icon={<Moon />} onClick={() => setPreviewTheme("dark")} />
-
-      </div>
-
-    </header>
-
-    <div className="catalog-layout">
-
-      <nav className="catalog-nav" aria-label="Design system index">
-
-        <div className="catalog-nav-family"><span className="catalog-nav-label">Foundations</span>{foundationPages.map(entry => <a key={entry.id} href={`/design-system/foundations/${entry.id}`} aria-current={foundation === entry.id ? "page" : undefined}>{entry.label}</a>)}</div>
-        <div className="catalog-nav-family"><span className="catalog-nav-label">Components</span>{componentFamilies.map(entry => <a key={entry.id} href={`/design-system?component=${entry.id}`} aria-current={section === "components" && family.id === entry.id ? "page" : undefined}>{entry.label}</a>)}</div>
-
-      </nav>
-
-      <div className="catalog-main" key={`${section}-${familyId}`}>
-
-      {foundation && <FoundationContent page={foundation} />}
-
-      {section === "components" && <>
-
-        {entries.map(entry => <ComponentDetail key={entry.name} entry={entry} />)}
-
-      </>}
-
-
-
-      </div>
-
-    </div>
-
-  </main></div>;
-
+  return <div className="catalog-main" key={foundation ?? family.id}>
+    {foundation ? <FoundationContent page={foundation} /> : entries.map(entry => <ComponentDetail key={entry.name} entry={entry} />)}
+  </div>;
 }
-

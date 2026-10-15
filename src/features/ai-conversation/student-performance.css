@@ -50,9 +50,6 @@
 
 .op-student-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 
-.ai-student-result-row{grid-template-columns:40px minmax(120px,1fr) 100px 140px auto auto}
-@media(max-width:900px){.ai-student-result-row{grid-template-columns:40px minmax(120px,1fr);gap:12px}}
-
 /* Assigned-student headers and rows share the same five-column layout. */
 .ai-teacher .ai-student-table .ai-student-table__header,
 .ai-teacher .ai-student-table .ai-student-result-row {

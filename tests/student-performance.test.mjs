@@ -4,9 +4,7 @@ import { createContext, runInContext } from "node:vm";
 import test from "node:test";
 import ts from "typescript";
 
-const analytics = createContext({ exports: {} });
-runInContext(ts.transpileModule(readFileSync(new URL("../src/features/ai-conversation/report-analytics.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, analytics);
-const context = createContext({ exports: {}, require: (name) => name === "./report-analytics" ? analytics.exports : ({ SKILL_LABELS: ["Pronunciation", "Speech Rhythm", "Use of Vocabulary", "Topic Adherence", "Use of Grammar"] }) });
+const context = createContext({ exports: {}, require: () => ({ SKILL_LABELS: ["Pronunciation", "Speech Rhythm", "Use of Vocabulary", "Topic Adherence", "Use of Grammar"] }) });
 runInContext(ts.transpileModule(readFileSync(new URL("../src/features/ai-conversation/performance.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, context);
 const api = context.exports;
 const practice = { id: "oral", practiceType: "oral-production", title: "Explain a need", level: "A2" };
@@ -43,7 +41,7 @@ test("teacher revisions replace skill evidence without changing overall or compl
   assert.equal(history([revised])[0].time, history([original])[0].time);
 });
 test("zero is a valid evaluated score and missing evaluation is pending", () => {
-  const zero = { ...attempt("a", 1), evaluation: { overall: 0, dimensions: [{ label: "Pronunciation", score: 0 }] } };
+  const zero = { ...attempt("a", 1), evaluation: { overall: 0, dimensions: [] } };
   assert.equal(api.hasEvaluation(history([zero])[0]), true);
   assert.equal(api.hasEvaluation(history([attempt("b", 2, false)])[0]), false);
 });
@@ -107,13 +105,6 @@ test("recurrence groups communicative meaning and excludes isolated grammar corr
 test("insufficient evaluated data never generates longitudinal conclusions", () => {
   assert.match(api.pedagogicalSummary([]), /when feedback is added/);
   assert.match(api.pedagogicalSummary(history([attempt("one", 1)])), /At least two practices/);
-});
-
-test("evolution uses the current individual report Score after a teacher edit", () => {
- const response = attempt("current", 1);
- assert.equal(api.performanceScore(response), analytics.exports.attemptScore(response));
- response.teacherCorrections = [{ label: "Pronunciation", score: 92, evidence: "Original evidence" }];
- assert.equal(api.performanceScore(response), 92);
 });
 
 const examplesContext = createContext({ exports: {} });

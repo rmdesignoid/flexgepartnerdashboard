@@ -1,4 +1,3 @@
-import { attemptScore } from "./report-analytics";
 import { SKILL_LABELS, type Attempt, type ConversationState, type Practice } from "./types";
 
 export type PerformanceEntry = { attempt: Attempt; practice: Practice; time: number };
@@ -24,7 +23,7 @@ export function effectiveSkills(attempt: Attempt) {
   return SKILL_LABELS.map((label) => attempt.teacherCorrections?.find((s) => s.label === label) ?? attempt.evaluation?.dimensions.find((s) => s.label === label)).filter((s): s is { label: string; score: number; evidence?: string } => !!s);
 }
 export function hasEvaluation(entry: PerformanceEntry) {
-  const overall = performanceScore(entry.attempt);
+  const overall = entry.attempt.evaluation?.overall;
   return typeof overall === "number" && Number.isFinite(overall) && overall >= 0 && overall <= 100;
 }
 // Text evidence is deliberately independent of scores. A score-only edit keeps
@@ -120,8 +119,6 @@ export function performanceDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
-
-export function performanceScore(attempt: Attempt) { return attempt.evaluation ? attemptScore(attempt) : null; }
 
 // Curated copy for the seeded Anna demonstration, never for real assessments.
 export function annaExampleInsights(entries: PerformanceEntry[], student: string) {
