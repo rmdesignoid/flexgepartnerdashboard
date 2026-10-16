@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ArrowLeft, Moon, Sun } from "lucide-react";
 import { IconButton, LinkButton } from ".";
 import { componentFamilies, foundationPages, resolveComponentFamily } from "./catalog";
 import "./catalog.css";
 
-/** Persistent frame: navigation only replaces the page content. */
+/** Catalog navigation uses document links so it also works without the RSC router. */
 export function DesignSystemShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -27,8 +26,8 @@ export function DesignSystemShell({ children }: { children: ReactNode }) {
     </header>
     <div className="catalog-layout">
       <nav className="catalog-nav" aria-label="Design system index">
-        <div className="catalog-nav-family"><span className="catalog-nav-label">Foundations</span>{foundationPages.map(entry => <Link key={entry.id} href={`/design-system/foundations/${entry.id}`} scroll={false} aria-current={foundation === entry.id ? "page" : undefined}>{entry.label}</Link>)}</div>
-        <div className="catalog-nav-family"><span className="catalog-nav-label">Components</span>{componentFamilies.map(entry => <Link key={entry.id} href={`/design-system?component=${entry.id}`} scroll={false} aria-current={!foundation && family.id === entry.id ? "page" : undefined}>{entry.label}</Link>)}</div>
+        <div className="catalog-nav-family"><span className="catalog-nav-label">Foundations</span>{foundationPages.map(entry => <a key={entry.id} href={`/design-system/foundations/${entry.id}`} aria-current={foundation === entry.id ? "page" : undefined}>{entry.label}</a>)}</div>
+        <div className="catalog-nav-family"><span className="catalog-nav-label">Components</span>{componentFamilies.map(entry => <a key={entry.id} href={`/design-system?component=${entry.id}`} aria-current={!foundation && family.id === entry.id ? "page" : undefined}>{entry.label}</a>)}</div>
       </nav>
       {children}
     </div>
